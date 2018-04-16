@@ -1,0 +1,26 @@
+[package]
+name = "shepplogan"
+version = "0.1.0"
+authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
+license = "MIT OR Apache-2.0"
+description = "Shepp-Logan phantom"
+documentation = "https://stefan-k.github.io/shepplogan-rs/shepplogan/"
+homepage = "https://github.com/stefan-k/shepplogan-rs"
+repository = "https://github.com/stefan-k/shepplogan-rs"
+readme = "README.md"
+keywords = ["phantom", "medical imaging", "medical image processing"]
+categories = ["science"]
+#license-file = "LICENSE-APACHE"
+exclude = [ 
+	".travis.yml",
+	"push_docs",
+]
+
+[dependencies]
+clippy = {version = "*", optional = true}
+
+[features]
+default = []
+
+[badges]
+travis-ci = { repository = "stefan-k/shepplogan-rs", branch = "master" }
