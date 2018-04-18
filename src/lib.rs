@@ -26,8 +26,6 @@ struct Ellipse {
     major_axis: f64,
     /// minor axis
     minor_axis: f64,
-    /// theta axis
-    theta: f64,
     /// sin(theta)
     theta_sin: f64,
     /// cos(theta)
@@ -54,7 +52,6 @@ impl Ellipse {
             center_y,
             major_axis,
             minor_axis,
-            theta,
             theta_sin,
             theta_cos,
             intensity,
@@ -78,7 +75,7 @@ impl Ellipse {
 /// todo
 pub fn shepplogan(nx: usize, ny: usize) -> Array2<f64> {
     let mut ellipses: Vec<Ellipse> = Vec::with_capacity(10);
-    ellipses.push(Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 2.0));
+    ellipses.push(Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0));
     ellipses.push(Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98));
     ellipses.push(Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.02));
     ellipses.push(Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.02));
@@ -88,6 +85,43 @@ pub fn shepplogan(nx: usize, ny: usize) -> Array2<f64> {
     ellipses.push(Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.01));
     ellipses.push(Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.01));
     ellipses.push(Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.01));
+    let mut arr = Array::zeros((nx, ny));
+    arr.indexed_iter_mut()
+        .map(|((x, y), a): ((usize, usize), &mut f64)| {
+            let nx2 = (nx as f64) / 2.0;
+            let ny2 = (ny as f64) / 2.0;
+            let x = (x as f64 - nx2) / nx2;
+            let y = (y as f64 - nx2) / ny2;
+            let mut f = 0.0;
+            for e in ellipses.iter() {
+                if e.inside(x, y) {
+                    f += e.intensity();
+                    // *a += e.intensity();
+                }
+            }
+            *a += f;
+            // ellipses
+            //     .iter()
+            //     .filter(move |&b| b.inside(x, y))
+            //     .map(|b| *a += b.intensity())
+        })
+        .count();
+    arr
+}
+
+/// todo
+pub fn shepplogan_modified(nx: usize, ny: usize) -> Array2<f64> {
+    let mut ellipses: Vec<Ellipse> = Vec::with_capacity(10);
+    ellipses.push(Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0));
+    ellipses.push(Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.8));
+    ellipses.push(Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.2));
+    ellipses.push(Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.2));
+    ellipses.push(Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.1));
+    ellipses.push(Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.1));
+    ellipses.push(Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.1));
+    ellipses.push(Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.1));
+    ellipses.push(Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.1));
+    ellipses.push(Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.1));
     let mut arr = Array::zeros((nx, ny));
     arr.indexed_iter_mut()
         .map(|((x, y), a): ((usize, usize), &mut f64)| {
