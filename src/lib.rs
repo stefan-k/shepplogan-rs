@@ -85,16 +85,17 @@ pub fn shepplogan(nx: usize, ny: usize) -> Array2<f64> {
     ellipses.push(Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.01));
     ellipses.push(Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.01));
     ellipses.push(Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.01));
-    let mut arr = Array::zeros((nx, ny));
+    let mut arr = Array::zeros((ny, nx));
     arr.indexed_iter_mut()
-        .map(|((x, y), a): ((usize, usize), &mut f64)| {
+        .map(|((y, x), a): ((usize, usize), &mut f64)| {
             let nx2 = (nx as f64) / 2.0;
             let ny2 = (ny as f64) / 2.0;
-            let x = (x as f64 - nx2) / nx2;
-            let y = (y as f64 - nx2) / ny2;
+            let nmin = (std::cmp::min(nx, ny) as f64) / 2.0;
+            let x = (x as f64 - nx2) / nmin;
+            let y = (y as f64 - ny2) / nmin;
             let mut f = 0.0;
             for e in ellipses.iter() {
-                if e.inside(x, y) {
+                if e.inside(y, x) {
                     f += e.intensity();
                     // *a += e.intensity();
                 }
@@ -122,25 +123,22 @@ pub fn shepplogan_modified(nx: usize, ny: usize) -> Array2<f64> {
     ellipses.push(Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.1));
     ellipses.push(Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.1));
     ellipses.push(Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.1));
-    let mut arr = Array::zeros((nx, ny));
+    let mut arr = Array::zeros((ny, nx));
     arr.indexed_iter_mut()
-        .map(|((x, y), a): ((usize, usize), &mut f64)| {
+        .map(|((y, x), a): ((usize, usize), &mut f64)| {
             let nx2 = (nx as f64) / 2.0;
             let ny2 = (ny as f64) / 2.0;
-            let x = (x as f64 - nx2) / nx2;
-            let y = (y as f64 - nx2) / ny2;
+            let nmin = (std::cmp::min(nx, ny) as f64) / 2.0;
+            let x = (x as f64 - nx2) / nmin;
+            let y = (y as f64 - ny2) / nmin;
             let mut f = 0.0;
             for e in ellipses.iter() {
-                if e.inside(x, y) {
+                if e.inside(y, x) {
                     f += e.intensity();
                     // *a += e.intensity();
                 }
             }
             *a += f;
-            // ellipses
-            //     .iter()
-            //     .filter(move |&b| b.inside(x, y))
-            //     .map(|b| *a += b.intensity())
         })
         .count();
     arr
