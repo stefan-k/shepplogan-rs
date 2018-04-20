@@ -76,16 +76,16 @@ impl Ellipse {
 /// todo
 pub fn shepplogan(nx: usize, ny: usize) -> Array2<f64> {
     let ellipses: [Ellipse; 10] = [
-        Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
-        Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98),
-        Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.02),
-        Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.02),
         Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.01),
         Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.01),
         Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.01),
         Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.01),
         Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.01),
         Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.01),
+        Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.02),
+        Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.02),
+        Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98),
+        Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
     ];
     let mut arr = Array::zeros((ny, nx));
     arr.indexed_iter_mut()
@@ -115,16 +115,16 @@ pub fn shepplogan(nx: usize, ny: usize) -> Array2<f64> {
 /// todo
 pub fn shepplogan_modified(nx: usize, ny: usize) -> Array2<f64> {
     let ellipses: [Ellipse; 10] = [
-        Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
-        Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.8),
-        Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.2),
-        Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.2),
         Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.1),
         Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.1),
         Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.1),
         Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.1),
         Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.1),
         Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.1),
+        Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.2),
+        Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.2),
+        Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.8),
+        Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
     ];
 
     let mut arr = Array::zeros((ny, nx));
@@ -139,7 +139,6 @@ pub fn shepplogan_modified(nx: usize, ny: usize) -> Array2<f64> {
             for e in ellipses.iter() {
                 if e.inside(y, x) {
                     f += e.intensity();
-                    // *a += e.intensity();
                 }
             }
             *a += f;
