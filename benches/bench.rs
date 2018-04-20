@@ -16,7 +16,7 @@ extern crate test;
 #[cfg(test)]
 mod tests {
     use test::{black_box, Bencher};
-    use shepplogan::shepplogan;
+    use shepplogan::{shepplogan, shepplogan_modified};
 
     #[bench]
     fn shepplogan_256(b: &mut Bencher) {
@@ -29,6 +29,20 @@ mod tests {
     fn shepplogan_128(b: &mut Bencher) {
         b.iter(|| {
             black_box(shepplogan(128, 128));
+        });
+    }
+
+    #[bench]
+    fn shepplogan_modified_256(b: &mut Bencher) {
+        b.iter(|| {
+            black_box(shepplogan_modified(256, 256));
+        });
+    }
+
+    #[bench]
+    fn shepplogan_modified_128(b: &mut Bencher) {
+        b.iter(|| {
+            black_box(shepplogan_modified(128, 128));
         });
     }
 }

@@ -75,17 +75,18 @@ impl Ellipse {
 
 /// todo
 pub fn shepplogan(nx: usize, ny: usize) -> Array2<f64> {
-    let mut ellipses: Vec<Ellipse> = Vec::with_capacity(10);
-    ellipses.push(Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0));
-    ellipses.push(Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98));
-    ellipses.push(Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.02));
-    ellipses.push(Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.02));
-    ellipses.push(Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.01));
-    ellipses.push(Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.01));
-    ellipses.push(Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.01));
-    ellipses.push(Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.01));
-    ellipses.push(Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.01));
-    ellipses.push(Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.01));
+    let ellipses: [Ellipse; 10] = [
+        Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
+        Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98),
+        Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.02),
+        Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.02),
+        Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.01),
+        Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.01),
+        Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.01),
+        Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.01),
+        Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.01),
+        Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.01),
+    ];
     let mut arr = Array::zeros((ny, nx));
     arr.indexed_iter_mut()
         .map(|((y, x), a): ((usize, usize), &mut f64)| {
@@ -113,17 +114,19 @@ pub fn shepplogan(nx: usize, ny: usize) -> Array2<f64> {
 
 /// todo
 pub fn shepplogan_modified(nx: usize, ny: usize) -> Array2<f64> {
-    let mut ellipses: Vec<Ellipse> = Vec::with_capacity(10);
-    ellipses.push(Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0));
-    ellipses.push(Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.8));
-    ellipses.push(Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.2));
-    ellipses.push(Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.2));
-    ellipses.push(Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.1));
-    ellipses.push(Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.1));
-    ellipses.push(Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.1));
-    ellipses.push(Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.1));
-    ellipses.push(Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.1));
-    ellipses.push(Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.1));
+    let ellipses: [Ellipse; 10] = [
+        Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
+        Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.8),
+        Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.2),
+        Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.2),
+        Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.1),
+        Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.1),
+        Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.1),
+        Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.1),
+        Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.1),
+        Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.1),
+    ];
+
     let mut arr = Array::zeros((ny, nx));
     arr.indexed_iter_mut()
         .map(|((y, x), a): ((usize, usize), &mut f64)| {
