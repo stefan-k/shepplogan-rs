@@ -32,6 +32,8 @@ struct Ellipse {
     theta_cos: f64,
     /// intensity
     intensity: f64,
+    /// bounding box
+    bounding_box: (f64, f64, f64, f64),
 }
 
 impl Ellipse {
@@ -47,6 +49,18 @@ impl Ellipse {
         let theta = theta.to_radians();
         let theta_sin = theta.sin();
         let theta_cos = theta.cos();
+        let max_axis;
+        if (major_axis.abs() - minor_axis.abs()).is_sign_positive() {
+            max_axis = major_axis
+        } else {
+            max_axis = minor_axis
+        }
+        let bounding_box = (
+            (center_x - max_axis),
+            (center_y - max_axis),
+            (center_x + max_axis),
+            (center_y + max_axis),
+        );
         Ellipse {
             center_x,
             center_y,
@@ -55,6 +69,7 @@ impl Ellipse {
             theta_sin,
             theta_cos,
             intensity,
+            bounding_box,
         }
     }
 
@@ -70,6 +85,15 @@ impl Ellipse {
     /// todo
     pub fn intensity(&self) -> f64 {
         self.intensity
+    }
+
+    pub fn bounding_box(&self, nx: usize, ny: usize) -> (usize, usize, usize, usize) {
+        (
+            ((self.bounding_box.0 + 1.0) * (nx as f64) / 2.0).floor() as usize,
+            ((self.bounding_box.1 + 1.0) * (ny as f64) / 2.0).floor() as usize,
+            ((self.bounding_box.2 + 1.0) * (nx as f64) / 2.0).ceil() as usize,
+            ((self.bounding_box.3 + 1.0) * (ny as f64) / 2.0).ceil() as usize,
+        )
     }
 }
 
@@ -171,6 +195,43 @@ pub fn shepplogan_modified_vec(nx: usize, ny: usize) -> Vec<f64> {
                     .map(|e| e.intensity())
                     .sum(),
             );
+        }
+    }
+    arr
+}
+
+/// todo
+pub fn shepplogan_modified_vec_bounding_box(nx: usize, ny: usize) -> Vec<f64> {
+    let ellipses: [Ellipse; 10] = [
+        Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.1),
+        Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.1),
+        Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.1),
+        Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.1),
+        Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.1),
+        Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.1),
+        Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.2),
+        Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.2),
+        Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.8),
+        Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
+    ];
+
+    // let mut arr = Vec::with_capacity(nx * ny);
+    let mut arr = vec![0.0; nx * ny];
+    let nx2 = (nx as f64) / 2.0;
+    let ny2 = (ny as f64) / 2.0;
+    let nmin = (std::cmp::min(nx, ny) as f64) / 2.0;
+
+    for e in ellipses.iter() {
+        let bbox = e.bounding_box(nx, ny);
+        println!("{:?}", bbox);
+        for x in bbox.1..bbox.3 {
+            for y in bbox.0..bbox.2 {
+                let xi = (x as f64 - nx2) / nmin;
+                let yi = (y as f64 - ny2) / nmin;
+                if e.inside(yi, xi) {
+                    arr[y * ny + x] += e.intensity();
+                }
+            }
         }
     }
     arr

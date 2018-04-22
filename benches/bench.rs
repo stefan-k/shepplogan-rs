@@ -15,8 +15,9 @@ extern crate test;
 
 #[cfg(test)]
 mod tests {
+    use shepplogan::{shepplogan, shepplogan_modified, shepplogan_modified_vec,
+                     shepplogan_modified_vec_bounding_box};
     use test::{black_box, Bencher};
-    use shepplogan::{shepplogan, shepplogan_modified, shepplogan_modified_vec};
 
     #[bench]
     fn shepplogan_256(b: &mut Bencher) {
@@ -78,6 +79,27 @@ mod tests {
     fn shepplogan_modified_vec_512(b: &mut Bencher) {
         b.iter(|| {
             black_box(shepplogan_modified_vec(512, 512));
+        });
+    }
+
+    #[bench]
+    fn shepplogan_modified_vec_bb_256(b: &mut Bencher) {
+        b.iter(|| {
+            black_box(shepplogan_modified_vec_bounding_box(256, 256));
+        });
+    }
+
+    #[bench]
+    fn shepplogan_modified_vec_bb_128(b: &mut Bencher) {
+        b.iter(|| {
+            black_box(shepplogan_modified_vec_bounding_box(128, 128));
+        });
+    }
+
+    #[bench]
+    fn shepplogan_modified_vec_bb_512(b: &mut Bencher) {
+        b.iter(|| {
+            black_box(shepplogan_modified_vec_bounding_box(512, 512));
         });
     }
 }

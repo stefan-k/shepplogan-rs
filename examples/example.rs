@@ -10,7 +10,8 @@ extern crate shepplogan;
 
 fn main() {
     let nx = 256;
-    let ny = 320;
+    // let ny = 320;
+    let ny = 256;
 
     // Original Shepp-Logan phantom
     let phantom = shepplogan::shepplogan(nx, ny);
@@ -50,6 +51,18 @@ fn main() {
     let phantom: Vec<u8> = phantom.iter().map(|x| (*x * 255.0) as u8).collect();
     image::save_buffer(
         "shepp_logan_modified_vec.png",
+        &phantom,
+        nx as u32,
+        ny as u32,
+        image::Gray(8),
+    ).unwrap();
+
+    // Modified Shepp-Logan phantom (Vec, bounding box)
+    let phantom = shepplogan::shepplogan_modified_vec_bounding_box(nx, ny);
+
+    let phantom: Vec<u8> = phantom.iter().map(|x| (*x * 255.0) as u8).collect();
+    image::save_buffer(
+        "shepp_logan_modified_vec_boundingbox.png",
         &phantom,
         nx as u32,
         ny as u32,
