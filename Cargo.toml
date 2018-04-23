@@ -18,7 +18,6 @@ exclude = [
 
 [dependencies]
 clippy = {version = "*", optional = true}
-ndarray = "*"
 
 [dev-dependencies]
 image = "*"
