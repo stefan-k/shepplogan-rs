@@ -55,7 +55,8 @@ impl Ellipse {
         // } else {
         //     max_axis = minor_axis
         // }
-        let max_axis = (major_axis.powi(2) + minor_axis.powi(2)).sqrt();
+        // Very pessimistic
+        let max_axis = 0.04 + (major_axis.powi(2) + minor_axis.powi(2)).sqrt();
         let bounding_box = (
             (center_x - max_axis),
             (center_y - max_axis),
@@ -228,7 +229,6 @@ pub fn shepplogan_modified_vec_bounding_box(nx: usize, ny: usize) -> Vec<f64> {
         Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
     ];
 
-    // let mut arr = Vec::with_capacity(nx * ny);
     let mut arr = vec![0.0; nx * ny];
     let nx2 = (nx as f64) / 2.0;
     let ny2 = (ny as f64) / 2.0;
