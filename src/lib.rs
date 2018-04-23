@@ -49,12 +49,13 @@ impl Ellipse {
         let theta = theta.to_radians();
         let theta_sin = theta.sin();
         let theta_cos = theta.cos();
-        let max_axis;
-        if (major_axis.abs() - minor_axis.abs()).is_sign_positive() {
-            max_axis = major_axis
-        } else {
-            max_axis = minor_axis
-        }
+        // let max_axis;
+        // if (major_axis.abs() - minor_axis.abs()).is_sign_positive() {
+        //     max_axis = major_axis
+        // } else {
+        //     max_axis = minor_axis
+        // }
+        let max_axis = (major_axis.powi(2) + minor_axis.powi(2)).sqrt();
         let bounding_box = (
             (center_x - max_axis),
             (center_y - max_axis),
@@ -92,17 +93,20 @@ impl Ellipse {
         let by1 = ((self.bounding_box.1 + 1.0) * (ny as f64) / 2.0).floor();
         let bx2 = ((self.bounding_box.2 + 1.0) * (nx as f64) / 2.0).ceil();
         let by2 = ((self.bounding_box.3 + 1.0) * (ny as f64) / 2.0).ceil();
-        match (bx1, by1, bx2, by2) {
-            (x1, y1, x2, y2) if x1 < 0.0 => (0, y1 as usize, x2 as usize, y2 as usize),
-            (x1, y1, x2, y2) if x1 > nx as f64 => (nx, y1 as usize, x2 as usize, y2 as usize),
-            (x1, y1, x2, y2) if y1 < 0.0 => (x1 as usize, 0, x2 as usize, y2 as usize),
-            (x1, y1, x2, y2) if y1 > ny as f64 => (x1 as usize, ny, x2 as usize, y2 as usize),
-            (x1, y1, x2, y2) if x2 < 0.0 => (x1 as usize, y1 as usize, 0, y2 as usize),
-            (x1, y1, x2, y2) if x2 > nx as f64 => (x1 as usize, y1 as usize, nx, y2 as usize),
-            (x1, y1, x2, y2) if y2 < 0.0 => (x1 as usize, y1 as usize, x2 as usize, 0),
-            (x1, y1, x2, y2) if y2 > ny as f64 => (x1 as usize, y1 as usize, x2 as usize, ny),
-            (x1, y1, x2, y2) => (x1 as usize, y1 as usize, x2 as usize, y2 as usize),
-        }
+        let out: Vec<usize> = [bx1, by1, bx2, by2]
+            .iter()
+            .zip([nx, ny, nx, ny].iter())
+            .map(|(x, n)| {
+                if *x < 0.0 {
+                    0
+                } else if *x > *n as f64 {
+                    *n
+                } else {
+                    *x as usize
+                }
+            })
+            .collect();
+        (out[0], out[1], out[2], out[3])
     }
 }
 
