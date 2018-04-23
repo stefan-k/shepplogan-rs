@@ -88,12 +88,21 @@ impl Ellipse {
     }
 
     pub fn bounding_box(&self, nx: usize, ny: usize) -> (usize, usize, usize, usize) {
-        (
-            ((self.bounding_box.0 + 1.0) * (nx as f64) / 2.0).floor() as usize,
-            ((self.bounding_box.1 + 1.0) * (ny as f64) / 2.0).floor() as usize,
-            ((self.bounding_box.2 + 1.0) * (nx as f64) / 2.0).ceil() as usize,
-            ((self.bounding_box.3 + 1.0) * (ny as f64) / 2.0).ceil() as usize,
-        )
+        let bx1 = ((self.bounding_box.0 + 1.0) * (nx as f64) / 2.0).floor();
+        let by1 = ((self.bounding_box.1 + 1.0) * (ny as f64) / 2.0).floor();
+        let bx2 = ((self.bounding_box.2 + 1.0) * (nx as f64) / 2.0).ceil();
+        let by2 = ((self.bounding_box.3 + 1.0) * (ny as f64) / 2.0).ceil();
+        match (bx1, by1, bx2, by2) {
+            (x1, y1, x2, y2) if x1 < 0.0 => (0, y1 as usize, x2 as usize, y2 as usize),
+            (x1, y1, x2, y2) if x1 > nx as f64 => (nx, y1 as usize, x2 as usize, y2 as usize),
+            (x1, y1, x2, y2) if y1 < 0.0 => (x1 as usize, 0, x2 as usize, y2 as usize),
+            (x1, y1, x2, y2) if y1 > ny as f64 => (x1 as usize, ny, x2 as usize, y2 as usize),
+            (x1, y1, x2, y2) if x2 < 0.0 => (x1 as usize, y1 as usize, 0, y2 as usize),
+            (x1, y1, x2, y2) if x2 > nx as f64 => (x1 as usize, y1 as usize, nx, y2 as usize),
+            (x1, y1, x2, y2) if y2 < 0.0 => (x1 as usize, y1 as usize, x2 as usize, 0),
+            (x1, y1, x2, y2) if y2 > ny as f64 => (x1 as usize, y1 as usize, x2 as usize, ny),
+            (x1, y1, x2, y2) => (x1 as usize, y1 as usize, x2 as usize, y2 as usize),
+        }
     }
 }
 
