@@ -11,170 +11,64 @@
 #![cfg_attr(feature = "clippy", plugin(clippy))]
 #![warn(missing_docs)]
 
-/// ellipse
-struct Ellipse {
-    /// x-coordinate of center
-    center_x: f64,
-    /// y-coordinate of center
-    center_y: f64,
-    /// major axis
-    major_axis: f64,
-    /// minor axis
-    minor_axis: f64,
-    /// sin(theta)
-    theta_sin: f64,
-    /// cos(theta)
-    theta_cos: f64,
-    /// intensity
-    intensity: f64,
-    /// bounding box
-    bounding_box: (f64, f64, f64, f64),
+mod ellipse;
+use ellipse::Ellipse;
+
+macro_rules! parts {
+    () => {
+        [
+            Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.01),
+            Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.01),
+            Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.01),
+            Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.01),
+            Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.01),
+            Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.01),
+            Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.02),
+            Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.02),
+            Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98),
+            Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
+        ]
+    };
 }
 
-impl Ellipse {
-    /// Constructor
-    pub fn new(
-        center_x: f64,
-        center_y: f64,
-        major_axis: f64,
-        minor_axis: f64,
-        theta: f64,
-        intensity: f64,
-    ) -> Self {
-        let theta = theta.to_radians();
-        let theta_sin = theta.sin();
-        let theta_cos = theta.cos();
-        let max_axis;
-        // Very pessimistic
-        if (major_axis.abs() - minor_axis.abs()).is_sign_positive() {
-            max_axis = major_axis
-        } else {
-            max_axis = minor_axis
-        }
-        // let max_axis = (major_axis.powi(2) + minor_axis.powi(2)).sqrt();
-        let bounding_box = (
-            (center_x - max_axis),
-            (center_y - max_axis),
-            (center_x + max_axis),
-            (center_y + max_axis),
-        );
-        Ellipse {
-            center_x,
-            center_y,
-            major_axis,
-            minor_axis,
-            theta_sin,
-            theta_cos,
-            intensity,
-            bounding_box,
-        }
-    }
-
-    /// todo
-    /// TODO: x and y is inconsistent...
-    pub fn inside(&self, x: f64, y: f64) -> bool {
-        (self.theta_cos * (x - self.center_x) + self.theta_sin * (y - self.center_y)).powi(2)
-            / self.major_axis.powi(2)
-            + (self.theta_sin * (x - self.center_x) - self.theta_cos * (y - self.center_y)).powi(2)
-                / self.minor_axis.powi(2) <= 1.0
-    }
-
-    /// todo
-    pub fn intensity(&self) -> f64 {
-        self.intensity
-    }
-
-    pub fn bounding_box(&self, nx: usize, ny: usize) -> (usize, usize, usize, usize) {
-        let bx1 = ((self.bounding_box.0 + 1.0) * (nx as f64) / 2.0).floor();
-        let by1 = ((self.bounding_box.1 + 1.0) * (ny as f64) / 2.0).floor();
-        let bx2 = ((self.bounding_box.2 + 1.0) * (nx as f64) / 2.0).ceil();
-        let by2 = ((self.bounding_box.3 + 1.0) * (ny as f64) / 2.0).ceil();
-        let out: Vec<usize> = [bx1, by1, bx2, by2]
-            .iter()
-            .zip([nx, ny, nx, ny].iter())
-            .map(|(x, n)| {
-                if *x < 0.0 {
-                    0
-                } else if *x > *n as f64 {
-                    *n
-                } else {
-                    *x as usize
-                }
-            })
-            .collect();
-        (out[0], out[1], out[2], out[3])
-    }
+macro_rules! parts_modified {
+    () => {
+        [
+            Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.1),
+            Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.1),
+            Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.1),
+            Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.1),
+            Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.1),
+            Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.1),
+            Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.2),
+            Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.2),
+            Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.8),
+            Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
+        ]
+    };
 }
 
 /// todo
 pub fn shepplogan_slow(nx: usize, ny: usize) -> Vec<f64> {
-    let ellipses: [Ellipse; 10] = [
-        Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.01),
-        Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.01),
-        Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.01),
-        Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.01),
-        Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.01),
-        Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.01),
-        Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.02),
-        Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.02),
-        Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98),
-        Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
-    ];
-
+    let ellipses = parts!();
     phantom_slow(&ellipses, nx, ny)
 }
 
 /// todo
 pub fn shepplogan(nx: usize, ny: usize) -> Vec<f64> {
-    let ellipses: [Ellipse; 10] = [
-        Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.01),
-        Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.01),
-        Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.01),
-        Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.01),
-        Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.01),
-        Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.01),
-        Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.02),
-        Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.02),
-        Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98),
-        Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
-    ];
-
+    let ellipses = parts!();
     phantom(&ellipses, nx, ny)
 }
 
 /// todo
 pub fn shepplogan_modified_slow(nx: usize, ny: usize) -> Vec<f64> {
-    let ellipses: [Ellipse; 10] = [
-        Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.1),
-        Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.1),
-        Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.1),
-        Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.1),
-        Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.1),
-        Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.1),
-        Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.2),
-        Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.2),
-        Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.8),
-        Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
-    ];
-
+    let ellipses = parts_modified!();
     phantom_slow(&ellipses, nx, ny)
 }
 
 /// todo
 pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
-    let ellipses: [Ellipse; 10] = [
-        Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.1),
-        Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.1),
-        Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.1),
-        Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.1),
-        Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.1),
-        Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.1),
-        Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.2),
-        Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.2),
-        Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.8),
-        Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
-    ];
-
+    let ellipses = parts_modified!();
     phantom(&ellipses, nx, ny)
 }
 
