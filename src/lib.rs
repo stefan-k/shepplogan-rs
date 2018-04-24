@@ -121,25 +121,7 @@ pub fn shepplogan_slow(nx: usize, ny: usize) -> Vec<f64> {
         Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
     ];
 
-    let mut arr = Vec::with_capacity(nx * ny);
-    let nx2 = (nx as f64) / 2.0;
-    let ny2 = (ny as f64) / 2.0;
-    let nmin = (std::cmp::min(nx, ny) as f64) / 2.0;
-
-    for y in 0..ny {
-        for x in 0..nx {
-            let xi = (x as f64 - nx2) / nmin;
-            let yi = (y as f64 - ny2) / nmin;
-            arr.push(
-                ellipses
-                    .iter()
-                    .filter(|e| e.inside(yi, xi))
-                    .map(|e| e.intensity())
-                    .sum(),
-            );
-        }
-    }
-    arr
+    phantom_slow(&ellipses, nx, ny)
 }
 
 /// todo
@@ -157,24 +139,7 @@ pub fn shepplogan(nx: usize, ny: usize) -> Vec<f64> {
         Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
     ];
 
-    let mut arr = vec![0.0; nx * ny];
-    let nx2 = (nx as f64) / 2.0;
-    let ny2 = (ny as f64) / 2.0;
-    let nmin = (std::cmp::min(nx, ny) as f64) / 2.0;
-
-    for e in ellipses.iter() {
-        let bbox = e.bounding_box(nx, ny);
-        for x in bbox.1..bbox.3 {
-            for y in bbox.0..bbox.2 {
-                let xi = (x as f64 - nx2) / nmin;
-                let yi = (y as f64 - ny2) / nmin;
-                if e.inside(yi, xi) {
-                    arr[y * ny + x] += e.intensity();
-                }
-            }
-        }
-    }
-    arr
+    phantom(&ellipses, nx, ny)
 }
 
 /// todo
@@ -192,25 +157,7 @@ pub fn shepplogan_modified_slow(nx: usize, ny: usize) -> Vec<f64> {
         Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
     ];
 
-    let mut arr = Vec::with_capacity(nx * ny);
-    let nx2 = (nx as f64) / 2.0;
-    let ny2 = (ny as f64) / 2.0;
-    let nmin = (std::cmp::min(nx, ny) as f64) / 2.0;
-
-    for y in 0..ny {
-        for x in 0..nx {
-            let xi = (x as f64 - nx2) / nmin;
-            let yi = (y as f64 - ny2) / nmin;
-            arr.push(
-                ellipses
-                    .iter()
-                    .filter(|e| e.inside(yi, xi))
-                    .map(|e| e.intensity())
-                    .sum(),
-            );
-        }
-    }
-    arr
+    phantom_slow(&ellipses, nx, ny)
 }
 
 /// todo
@@ -228,6 +175,10 @@ pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
         Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
     ];
 
+    phantom(&ellipses, nx, ny)
+}
+
+fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     let mut arr = vec![0.0; nx * ny];
     let nx2 = (nx as f64) / 2.0;
     let ny2 = (ny as f64) / 2.0;
@@ -243,6 +194,28 @@ pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
                     arr[y * ny + x] += e.intensity();
                 }
             }
+        }
+    }
+    arr
+}
+
+fn phantom_slow(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
+    let mut arr = Vec::with_capacity(nx * ny);
+    let nx2 = (nx as f64) / 2.0;
+    let ny2 = (ny as f64) / 2.0;
+    let nmin = (std::cmp::min(nx, ny) as f64) / 2.0;
+
+    for y in 0..ny {
+        for x in 0..nx {
+            let xi = (x as f64 - nx2) / nmin;
+            let yi = (y as f64 - ny2) / nmin;
+            arr.push(
+                ellipses
+                    .iter()
+                    .filter(|e| e.inside(yi, xi))
+                    .map(|e| e.intensity())
+                    .sum(),
+            );
         }
     }
     arr
