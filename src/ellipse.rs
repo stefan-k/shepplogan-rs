@@ -40,19 +40,13 @@ impl Ellipse {
         let theta = theta.to_radians();
         let theta_sin = theta.sin();
         let theta_cos = theta.cos();
-        let max_axis;
-        // Very pessimistic
-        if (major_axis.abs() - minor_axis.abs()).is_sign_positive() {
-            max_axis = major_axis
-        } else {
-            max_axis = minor_axis
-        }
-        // let max_axis = (major_axis.powi(2) + minor_axis.powi(2)).sqrt();
+        let bbx = ((theta_cos * major_axis).powi(2) + (theta_sin * minor_axis).powi(2)).sqrt();
+        let bby = ((theta_sin * major_axis).powi(2) + (theta_cos * minor_axis).powi(2)).sqrt();
         let bounding_box = (
-            (center_x - max_axis),
-            (center_y - max_axis),
-            (center_x + max_axis),
-            (center_y + max_axis),
+            (center_x - bbx),
+            (center_y - bby),
+            (center_x + bbx),
+            (center_y + bby),
         );
         Ellipse {
             center_x,
