@@ -17,18 +17,14 @@ extern crate rayon;
 
 mod ellipse;
 use ellipse::Ellipse;
-// #[cfg(feature = "parallel")]
-// use mucow::MuCow;
 #[cfg(feature = "parallel")]
 use rayon::prelude::*;
 // #[cfg(feature = "parallel")]
-// use std::ops::DerefMut;
-#[cfg(feature = "parallel")]
-use std::sync::Arc;
+// use std::sync::Arc;
 #[cfg(feature = "parallel")]
 use std::sync::Mutex;
-#[cfg(feature = "parallel")]
-use std::sync::RwLock;
+// #[cfg(feature = "parallel")]
+// use std::sync::RwLock;
 
 macro_rules! parts {
     () => {
@@ -130,11 +126,10 @@ fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
 /// todo
 #[cfg(feature = "parallel")]
 fn phantom_parallel(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
-    let arr: Vec<Arc<Mutex<f64>>> = (0..(nx * ny))
+    let arr: Vec<Mutex<f64>> = (0..(nx * ny))
         .into_par_iter()
-        .map(|_| Arc::new(Mutex::new(0.0)))
+        .map(|_| Mutex::new(0.0))
         .collect();
-    // let arr: Arc<RwLock<Vec<Arc<Mutex<f64>>>>> = Arc::new(RwLock::new(arr));
     let nx2 = (nx as f64) / 2.0;
     let ny2 = (ny as f64) / 2.0;
     let nmin = (std::cmp::min(nx, ny) as f64) / 2.0;
@@ -150,18 +145,13 @@ fn phantom_parallel(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
                         let xi = (x as f64 - nx2) / nmin;
                         let yi = (y as f64 - ny2) / nmin;
                         if e.inside(yi, xi) {
-                            // let c = a2.read().unwrap();
-                            let c = *a2;
-                            let mut b = (*c)[y * ny + x].lock().unwrap();
+                            let mut b = (*a2)[y * ny + x].lock().unwrap();
                             *b = *b + e.intensity();
                         }
                     })
             });
     }
-    // let fu = Arc::try_unwrap(arr).unwrap();
-    // let bla = &*(fu.read().unwrap());
-    // bla.into_iter().map(|x| *((**x).lock().unwrap())).collect()
-    arr.into_iter().map(|x| *((*x).lock().unwrap())).collect()
+    arr.into_iter().map(|x| *(x.lock().unwrap())).collect()
 }
 
 fn phantom_slow(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
