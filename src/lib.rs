@@ -147,7 +147,7 @@ fn phantom_parallel(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
             })
         });
     });
-    arr.into_iter().map(|x| *(x.lock().unwrap())).collect()
+    arr.into_par_iter().map(|x| *(x.lock().unwrap())).collect()
 }
 
 fn phantom_slow(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
