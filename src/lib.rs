@@ -17,13 +17,18 @@ extern crate rayon;
 
 mod ellipse;
 use ellipse::Ellipse;
-#[cfg(feature = "parallel")]
-use mucow::MuCow;
+// #[cfg(feature = "parallel")]
+// use mucow::MuCow;
 #[cfg(feature = "parallel")]
 use rayon::prelude::*;
+// #[cfg(feature = "parallel")]
+// use std::ops::DerefMut;
 #[cfg(feature = "parallel")]
-use std::ops::DerefMut;
-// use std::sync::Arc;
+use std::sync::Arc;
+#[cfg(feature = "parallel")]
+use std::sync::Mutex;
+#[cfg(feature = "parallel")]
+use std::sync::RwLock;
 
 macro_rules! parts {
     () => {
@@ -66,9 +71,17 @@ pub fn shepplogan_slow(nx: usize, ny: usize) -> Vec<f64> {
 }
 
 /// todo
+#[cfg(not(feature = "parallel"))]
 pub fn shepplogan(nx: usize, ny: usize) -> Vec<f64> {
     let ellipses = parts!();
     phantom(&ellipses, nx, ny)
+}
+
+/// todo
+#[cfg(feature = "parallel")]
+pub fn shepplogan(nx: usize, ny: usize) -> Vec<f64> {
+    let ellipses = parts!();
+    phantom_parallel(&ellipses, nx, ny)
 }
 
 /// todo
@@ -84,13 +97,15 @@ pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
     phantom(&ellipses, nx, ny)
 }
 
-#[cfg(feature = "parallel")]
 /// todo
+#[cfg(feature = "parallel")]
 pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
     let ellipses = parts_modified!();
     phantom_parallel(&ellipses, nx, ny)
 }
 
+/// todo
+#[cfg(not(feature = "parallel"))]
 fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     let mut arr = vec![0.0; nx * ny];
     let nx2 = (nx as f64) / 2.0;
@@ -112,11 +127,14 @@ fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     arr
 }
 
+/// todo
 #[cfg(feature = "parallel")]
 fn phantom_parallel(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
-    // let mut arr: Vec<Arc<f64>> = vec![Arc::new(0.0); nx * ny];
-    let mut arr: Vec<f64> = vec![0.0; nx * ny];
-    let mut arr: MuCow<Vec<f64>> = MuCow::Borrowed(&mut arr);
+    let arr: Vec<Arc<Mutex<f64>>> = (0..(nx * ny))
+        .into_par_iter()
+        .map(|_| Arc::new(Mutex::new(0.0)))
+        .collect();
+    // let arr: Arc<RwLock<Vec<Arc<Mutex<f64>>>>> = Arc::new(RwLock::new(arr));
     let nx2 = (nx as f64) / 2.0;
     let ny2 = (ny as f64) / 2.0;
     let nmin = (std::cmp::min(nx, ny) as f64) / 2.0;
@@ -125,22 +143,25 @@ fn phantom_parallel(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
         let bbox = e.bounding_box(nx, ny);
         (bbox.1..bbox.3)
             .into_par_iter()
-            .for_each_with(arr.clone(), |a1, x| {
+            .for_each_with(&arr, |a1, x| {
                 (bbox.0..bbox.2)
                     .into_par_iter()
-                    .for_each_with(a1.clone(), |a2, y| {
+                    .for_each_with(&a1, |a2, y| {
                         let xi = (x as f64 - nx2) / nmin;
                         let yi = (y as f64 - ny2) / nmin;
                         if e.inside(yi, xi) {
-                            // let b: () = a2.deref_mut();
-                            let b = a2.deref_mut();
-                            b[y * ny + x] += e.intensity();
-                            // println!("{}", b[y * ny + x]);
+                            // let c = a2.read().unwrap();
+                            let c = *a2;
+                            let mut b = (*c)[y * ny + x].lock().unwrap();
+                            *b = *b + e.intensity();
                         }
                     })
             });
     }
-    arr.into_owned()
+    // let fu = Arc::try_unwrap(arr).unwrap();
+    // let bla = &*(fu.read().unwrap());
+    // bla.into_iter().map(|x| *((**x).lock().unwrap())).collect()
+    arr.into_iter().map(|x| *((*x).lock().unwrap())).collect()
 }
 
 fn phantom_slow(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
