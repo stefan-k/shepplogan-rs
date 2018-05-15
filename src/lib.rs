@@ -132,9 +132,9 @@ fn phantom_parallel(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
 
     ellipses.into_par_iter().for_each(|e| {
         let bbox = e.bounding_box(nx, ny);
-        (bbox.1..bbox.3).into_par_iter().for_each(|x| {
+        (bbox.1..bbox.3).into_iter().for_each(|x| {
             let xi = (x as f64 - nx2) / nmin;
-            (bbox.0..bbox.2).into_par_iter().for_each(|y| {
+            (bbox.0..bbox.2).into_iter().for_each(|y| {
                 let yi = (y as f64 - ny2) / nmin;
                 if e.inside(yi, xi) {
                     let mut b = arr[y * ny + x].lock().unwrap();
