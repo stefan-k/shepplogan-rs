@@ -57,6 +57,7 @@ macro_rules! parts_modified {
 }
 
 /// todo
+#[cfg(feature = "slow_impl")]
 pub fn shepplogan_slow(nx: usize, ny: usize) -> Vec<f64> {
     let ellipses = parts!();
     phantom_slow(&ellipses, nx, ny)
@@ -77,6 +78,7 @@ pub fn shepplogan(nx: usize, ny: usize) -> Vec<f64> {
 }
 
 /// todo
+#[cfg(feature = "slow_impl")]
 pub fn shepplogan_modified_slow(nx: usize, ny: usize) -> Vec<f64> {
     let ellipses = parts_modified!();
     phantom_slow(&ellipses, nx, ny)
@@ -146,6 +148,7 @@ fn phantom_parallel(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     arr.into_par_iter().map(|x| *(x.lock().unwrap())).collect()
 }
 
+#[cfg(feature = "slow_impl")]
 fn phantom_slow(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     let mut arr = Vec::with_capacity(nx * ny);
     let nx2 = (nx as f64) / 2.0;

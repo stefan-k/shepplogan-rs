@@ -15,10 +15,13 @@ extern crate test;
 
 #[cfg(test)]
 mod tests {
-    use shepplogan::{shepplogan, shepplogan_modified, shepplogan_modified_slow, shepplogan_slow};
+    use shepplogan::{shepplogan, shepplogan_modified};
+    #[cfg(feature = "slow_impl")]
+    use shepplogan::{shepplogan_modified_slow, shepplogan_slow};
     use test::{black_box, Bencher};
 
     // 128x128
+    #[cfg(feature = "slow_impl")]
     #[bench]
     fn shepplogan_128_slow(b: &mut Bencher) {
         b.iter(|| {
@@ -26,6 +29,7 @@ mod tests {
         });
     }
 
+    #[cfg(feature = "slow_impl")]
     #[bench]
     fn shepplogan_128_modified_slow(b: &mut Bencher) {
         b.iter(|| {
@@ -48,6 +52,7 @@ mod tests {
     }
 
     // 256x256
+    #[cfg(feature = "slow_impl")]
     #[bench]
     fn shepplogan_256_slow(b: &mut Bencher) {
         b.iter(|| {
@@ -55,6 +60,7 @@ mod tests {
         });
     }
 
+    #[cfg(feature = "slow_impl")]
     #[bench]
     fn shepplogan_256_modified_slow(b: &mut Bencher) {
         b.iter(|| {
@@ -77,6 +83,7 @@ mod tests {
     }
 
     // 512x512
+    #[cfg(feature = "slow_impl")]
     #[bench]
     fn shepplogan_512_slow(b: &mut Bencher) {
         b.iter(|| {
@@ -84,6 +91,7 @@ mod tests {
         });
     }
 
+    #[cfg(feature = "slow_impl")]
     #[bench]
     fn shepplogan_512_modified_slow(b: &mut Bencher) {
         b.iter(|| {

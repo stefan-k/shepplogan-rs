@@ -26,6 +26,7 @@ image = "*"
 [features]
 default = []
 parallel = ["rayon"]
+slow_impl = []
 
 [badges]
 travis-ci = { repository = "stefan-k/shepplogan-rs", branch = "master" }
