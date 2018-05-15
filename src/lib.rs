@@ -11,8 +11,6 @@
 #![cfg_attr(feature = "clippy", plugin(clippy))]
 #![warn(missing_docs)]
 #[cfg(feature = "parallel")]
-extern crate mucow;
-#[cfg(feature = "parallel")]
 extern crate rayon;
 
 mod ellipse;
@@ -23,8 +21,6 @@ use rayon::prelude::*;
 // use std::sync::Arc;
 #[cfg(feature = "parallel")]
 use std::sync::Mutex;
-// #[cfg(feature = "parallel")]
-// use std::sync::RwLock;
 
 macro_rules! parts {
     () => {
