@@ -7,8 +7,6 @@
 
 //! TODO
 
-#![cfg_attr(feature = "clippy", feature(plugin))]
-#![cfg_attr(feature = "clippy", plugin(clippy))]
 #![warn(missing_docs)]
 #[cfg(feature = "parallel")]
 extern crate rayon;
@@ -17,8 +15,6 @@ mod ellipse;
 use ellipse::Ellipse;
 #[cfg(feature = "parallel")]
 use rayon::prelude::*;
-// #[cfg(feature = "parallel")]
-// use std::sync::Arc;
 #[cfg(feature = "parallel")]
 use std::sync::Mutex;
 
@@ -55,13 +51,6 @@ macro_rules! parts_modified {
         ]
     };
 }
-
-/// todo
-// #[cfg(feature = "slow_impl")]
-// pub fn shepplogan_slow(nx: usize, ny: usize) -> Vec<f64> {
-//     let ellipses = parts!();
-//     phantom_slow(&ellipses, nx, ny)
-// }
 
 /// todo
 #[cfg(not(feature = "parallel"))]
@@ -179,11 +168,3 @@ fn phantom_slow(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     }
     arr
 }
-
-// #[cfg(test)]
-// mod tests {
-//     #[test]
-//     fn it_works() {
-//         assert_eq!(2 + 2, 4);
-//     }
-// }
