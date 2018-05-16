@@ -57,14 +57,15 @@ macro_rules! parts_modified {
 }
 
 /// todo
-#[cfg(feature = "slow_impl")]
-pub fn shepplogan_slow(nx: usize, ny: usize) -> Vec<f64> {
-    let ellipses = parts!();
-    phantom_slow(&ellipses, nx, ny)
-}
+// #[cfg(feature = "slow_impl")]
+// pub fn shepplogan_slow(nx: usize, ny: usize) -> Vec<f64> {
+//     let ellipses = parts!();
+//     phantom_slow(&ellipses, nx, ny)
+// }
 
 /// todo
 #[cfg(not(feature = "parallel"))]
+#[cfg(not(feature = "slow_impl"))]
 pub fn shepplogan(nx: usize, ny: usize) -> Vec<f64> {
     let ellipses = parts!();
     phantom(&ellipses, nx, ny)
@@ -79,13 +80,14 @@ pub fn shepplogan(nx: usize, ny: usize) -> Vec<f64> {
 
 /// todo
 #[cfg(feature = "slow_impl")]
-pub fn shepplogan_modified_slow(nx: usize, ny: usize) -> Vec<f64> {
-    let ellipses = parts_modified!();
+pub fn shepplogan(nx: usize, ny: usize) -> Vec<f64> {
+    let ellipses = parts!();
     phantom_slow(&ellipses, nx, ny)
 }
 
 /// todo
 #[cfg(not(feature = "parallel"))]
+#[cfg(not(feature = "slow_impl"))]
 pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
     let ellipses = parts_modified!();
     phantom(&ellipses, nx, ny)
@@ -96,6 +98,13 @@ pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
 pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
     let ellipses = parts_modified!();
     phantom_parallel(&ellipses, nx, ny)
+}
+
+/// todo
+#[cfg(feature = "slow_impl")]
+pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
+    let ellipses = parts_modified!();
+    phantom_slow(&ellipses, nx, ny)
 }
 
 /// todo
