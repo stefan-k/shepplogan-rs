@@ -5,7 +5,13 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-//! TODO
+//! # Shepp-Logan phantom
+//!
+//! DESCRIPTION
+//!
+//! EXAMPLES
+//!
+//! REFERENCES
 
 #![warn(missing_docs)]
 #[cfg(feature = "parallel")]
