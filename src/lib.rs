@@ -52,52 +52,20 @@ macro_rules! parts_modified {
     };
 }
 
-/// todo
-#[cfg(not(feature = "parallel"))]
-#[cfg(not(feature = "slow_impl"))]
+/// Original Shepp-Logan phantom
 pub fn shepplogan(nx: usize, ny: usize) -> Vec<f64> {
     let ellipses = parts!();
     phantom(&ellipses, nx, ny)
 }
 
-/// todo
-#[cfg(feature = "parallel")]
-pub fn shepplogan(nx: usize, ny: usize) -> Vec<f64> {
-    let ellipses = parts!();
-    phantom_parallel(&ellipses, nx, ny)
-}
-
-/// todo
-#[cfg(feature = "slow_impl")]
-pub fn shepplogan(nx: usize, ny: usize) -> Vec<f64> {
-    let ellipses = parts!();
-    phantom_slow(&ellipses, nx, ny)
-}
-
-/// todo
-#[cfg(not(feature = "parallel"))]
-#[cfg(not(feature = "slow_impl"))]
+/// Modified Shepp-Logan phantom with better contrast
 pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
     let ellipses = parts_modified!();
     phantom(&ellipses, nx, ny)
 }
 
-/// todo
-#[cfg(feature = "parallel")]
-pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
-    let ellipses = parts_modified!();
-    phantom_parallel(&ellipses, nx, ny)
-}
-
-/// todo
-#[cfg(feature = "slow_impl")]
-pub fn shepplogan_modified(nx: usize, ny: usize) -> Vec<f64> {
-    let ellipses = parts_modified!();
-    phantom_slow(&ellipses, nx, ny)
-}
-
-/// todo
 #[cfg(not(feature = "parallel"))]
+#[cfg(not(feature = "slow_impl"))]
 fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     let mut arr = vec![0.0; nx * ny];
     let nx2 = (nx as f64) / 2.0;
@@ -119,9 +87,8 @@ fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     arr
 }
 
-/// todo
 #[cfg(feature = "parallel")]
-fn phantom_parallel(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
+fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     let arr: Vec<Mutex<f64>> = (0..(nx * ny))
         .into_par_iter()
         .map(|_| Mutex::new(0.0))
@@ -147,7 +114,7 @@ fn phantom_parallel(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
 }
 
 #[cfg(feature = "slow_impl")]
-fn phantom_slow(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
+fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     let mut arr = Vec::with_capacity(nx * ny);
     let nx2 = (nx as f64) / 2.0;
     let ny2 = (ny as f64) / 2.0;
