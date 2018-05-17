@@ -24,6 +24,7 @@ pub struct Ellipse {
     /// intensity
     intensity: f64,
     /// bounding box
+    #[cfg(not(feature = "slow_impl"))]
     bounding_box: (f64, f64, f64, f64),
 }
 
@@ -40,8 +41,11 @@ impl Ellipse {
         let theta = theta.to_radians();
         let theta_sin = theta.sin();
         let theta_cos = theta.cos();
+        #[cfg(not(feature = "slow_impl"))]
         let bbx = ((theta_cos * major_axis).powi(2) + (theta_sin * minor_axis).powi(2)).sqrt();
+        #[cfg(not(feature = "slow_impl"))]
         let bby = ((theta_sin * major_axis).powi(2) + (theta_cos * minor_axis).powi(2)).sqrt();
+        #[cfg(not(feature = "slow_impl"))]
         let bounding_box = (
             (center_x - bbx),
             (center_y - bby),
@@ -56,6 +60,7 @@ impl Ellipse {
             theta_sin,
             theta_cos,
             intensity,
+            #[cfg(not(feature = "slow_impl"))]
             bounding_box,
         }
     }
@@ -74,6 +79,7 @@ impl Ellipse {
         self.intensity
     }
 
+    #[cfg(not(feature = "slow_impl"))]
     pub fn bounding_box(&self, nx: usize, ny: usize) -> (usize, usize, usize, usize) {
         let bx1 = ((self.bounding_box.0 + 1.0) * (nx as f64) / 2.0).floor();
         let by1 = ((self.bounding_box.1 + 1.0) * (ny as f64) / 2.0).floor();
