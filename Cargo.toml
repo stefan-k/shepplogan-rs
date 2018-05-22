@@ -1,6 +1,6 @@
 [package]
 name = "shepplogan"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Shepp-Logan phantom"
@@ -8,7 +8,7 @@ documentation = "https://stefan-k.github.io/shepplogan-rs/shepplogan/"
 homepage = "https://github.com/stefan-k/shepplogan-rs"
 repository = "https://github.com/stefan-k/shepplogan-rs"
 readme = "README.md"
-keywords = ["phantom", "medical imaging", "medical image processing"]
+keywords = ["phantom", "medical imaging", "medical image processing", "image reconstruction"]
 categories = ["science"]
 #license-file = "LICENSE-APACHE"
 exclude = [ 
