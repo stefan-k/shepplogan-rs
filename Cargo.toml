@@ -9,7 +9,7 @@ homepage = "https://github.com/stefan-k/shepplogan-rs"
 repository = "https://github.com/stefan-k/shepplogan-rs"
 readme = "README.md"
 keywords = ["phantom", "medical imaging", "medical image processing", "image reconstruction"]
-categories = ["science"]
+categories = ["science", "rendering"]
 #license-file = "LICENSE-APACHE"
 exclude = [ 
 	".travis.yml",
