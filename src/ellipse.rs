@@ -5,9 +5,11 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-//! TODO
+//! # Ellipse
+//!
+//! Create ellipses...?
 
-/// ellipse
+/// Ellipse
 pub struct Ellipse {
     /// x-coordinate of center
     center_x: f64,
@@ -65,7 +67,7 @@ impl Ellipse {
         }
     }
 
-    /// todo
+    /// Checks if a point is inside the ellipse
     pub fn inside(&self, x: f64, y: f64) -> bool {
         (self.theta_cos * (x - self.center_x) + self.theta_sin * (y - self.center_y)).powi(2)
             / self.major_axis.powi(2)
@@ -73,12 +75,13 @@ impl Ellipse {
                 / self.minor_axis.powi(2) <= 1.0
     }
 
-    /// todo
+    /// Return intensity of the ellipse
     pub fn intensity(&self) -> f64 {
         self.intensity
     }
 
     #[cfg(not(feature = "slow_impl"))]
+    /// Return the bounding box of the ellipse
     pub fn bounding_box(&self, nx: usize, ny: usize) -> (usize, usize, usize, usize) {
         let bx1 = ((self.bounding_box.0 + 1.0) * (nx as f64) / 2.0).floor();
         let by1 = ((self.bounding_box.1 + 1.0) * (ny as f64) / 2.0).floor();

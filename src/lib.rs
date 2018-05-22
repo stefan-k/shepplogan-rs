@@ -11,7 +11,8 @@
 //! Well if you do, you're doing something wrong, but you've come to the right place.
 //! The Shepp-Logan phantom is a numerical phantom which is defined as the sum of 10 ellipses. It
 //! is often used as a test image for image reconstruction algorithms.
-//! This crate provides an efficient implementation for creating Shepp-Logan phantoms in 2D. 
+//! This crate provides a dependency-free, efficient implementation for creating Shepp-Logan
+//! phantoms in 2D. 
 //! The following results were obtained with `cargo bench` on an Intel Core i7 with 2.70GHz:
 //!
 //! Resolution | time        | fps   
