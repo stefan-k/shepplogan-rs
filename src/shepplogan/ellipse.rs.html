@@ -100,6 +100,9 @@
 <span id="100">100</span>
 <span id="101">101</span>
 <span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2018 Stefan Kroboth</span>
 <span class="comment">//</span>
@@ -108,9 +111,11 @@
 <span class="comment">// http://opensource.org/licenses/MIT&gt;, at your option. This file may not be</span>
 <span class="comment">// copied, modified, or distributed except according to those terms.</span>
 
-<span class="doccomment">//! TODO</span>
+<span class="doccomment">//! # Ellipse</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Create ellipses...?</span>
 
-<span class="doccomment">/// ellipse</span>
+<span class="doccomment">/// Ellipse</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Ellipse</span> {
     <span class="doccomment">/// x-coordinate of center</span>
     <span class="ident">center_x</span>: <span class="ident">f64</span>,
@@ -168,7 +173,7 @@
         }
     }
 
-    <span class="doccomment">/// todo</span>
+    <span class="doccomment">/// Checks if a point is inside the ellipse</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inside</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident">f64</span>, <span class="ident">y</span>: <span class="ident">f64</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         (<span class="self">self</span>.<span class="ident">theta_cos</span> <span class="op">*</span> (<span class="ident">x</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">center_x</span>) <span class="op">+</span> <span class="self">self</span>.<span class="ident">theta_sin</span> <span class="op">*</span> (<span class="ident">y</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">center_y</span>)).<span class="ident">powi</span>(<span class="number">2</span>)
             <span class="op">/</span> <span class="self">self</span>.<span class="ident">major_axis</span>.<span class="ident">powi</span>(<span class="number">2</span>)
@@ -176,12 +181,13 @@
                 <span class="op">/</span> <span class="self">self</span>.<span class="ident">minor_axis</span>.<span class="ident">powi</span>(<span class="number">2</span>) <span class="op">&lt;=</span> <span class="number">1.0</span>
     }
 
-    <span class="doccomment">/// todo</span>
+    <span class="doccomment">/// Return intensity of the ellipse</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">intensity</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">f64</span> {
         <span class="self">self</span>.<span class="ident">intensity</span>
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;slow_impl&quot;</span>))]</span>
+    <span class="doccomment">/// Return the bounding box of the ellipse</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bounding_box</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">nx</span>: <span class="ident">usize</span>, <span class="ident">ny</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> (<span class="ident">usize</span>, <span class="ident">usize</span>, <span class="ident">usize</span>, <span class="ident">usize</span>) {
         <span class="kw">let</span> <span class="ident">bx1</span> <span class="op">=</span> ((<span class="self">self</span>.<span class="ident">bounding_box</span>.<span class="number">0</span> <span class="op">+</span> <span class="number">1.0</span>) <span class="op">*</span> (<span class="ident">nx</span> <span class="kw">as</span> <span class="ident">f64</span>) <span class="op">/</span> <span class="number">2.0</span>).<span class="ident">floor</span>();
         <span class="kw">let</span> <span class="ident">by1</span> <span class="op">=</span> ((<span class="self">self</span>.<span class="ident">bounding_box</span>.<span class="number">1</span> <span class="op">+</span> <span class="number">1.0</span>) <span class="op">*</span> (<span class="ident">ny</span> <span class="kw">as</span> <span class="ident">f64</span>) <span class="op">/</span> <span class="number">2.0</span>).<span class="ident">floor</span>();
