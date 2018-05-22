@@ -66,7 +66,6 @@ impl Ellipse {
     }
 
     /// todo
-    /// TODO: x and y is inconsistent...
     pub fn inside(&self, x: f64, y: f64) -> bool {
         (self.theta_cos * (x - self.center_x) + self.theta_sin * (y - self.center_y)).powi(2)
             / self.major_axis.powi(2)

@@ -7,7 +7,18 @@
 
 //! # Shepp-Logan phantom
 //!
-//! DESCRIPTION
+//! Have you ever had the need to create hundreds to thousands of Shepp-Logan phantoms per second?
+//! Well if you do, you're doing something wrong, but you've come to the right place.
+//! The Shepp-Logan phantom is a numerical phantom which is defined as the sum of 10 ellipses. It
+//! is often used as a test image for image reconstruction algorithms.
+//! This crate provides an efficient implementation for creating Shepp-Logan phantoms in 2D. 
+//! The following results were obtained with `cargo bench` on an Intel Core i7 with 2.70GHz:
+//!
+//! | Resolution | time        | fps  |
+//! | -----------|------------:|-----:|
+//! | 128x128    |   111,000ns | 9000 |
+//! | 256x256    |   440,000ns | 2200 |
+//! | 512x512    | 1,780,000ns |  560 |
 //!
 //! EXAMPLES
 //!
@@ -80,12 +91,12 @@ fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
 
     for e in ellipses.iter() {
         let bbox = e.bounding_box(nx, ny);
-        for x in bbox.1..bbox.3 {
-            for y in bbox.0..bbox.2 {
-                let xi = (x as f64 - nx2) / nmin;
+        for x in bbox.0..bbox.2 {
+            let xi = (x as f64 - nx2) / nmin;
+            for y in bbox.1..bbox.3 {
                 let yi = (y as f64 - ny2) / nmin;
-                if e.inside(yi, xi) {
-                    arr[y * ny + x] += e.intensity();
+                if e.inside(xi, yi) {
+                    arr[(ny-y) * nx + x] += e.intensity();
                 }
             }
         }
@@ -105,12 +116,12 @@ fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
 
     ellipses.into_par_iter().for_each(|e| {
         let bbox = e.bounding_box(nx, ny);
-        (bbox.1..bbox.3).into_iter().for_each(|x| {
+        (bbox.0..bbox.2).into_iter().for_each(|x| {
             let xi = (x as f64 - nx2) / nmin;
-            (bbox.0..bbox.2).into_iter().for_each(|y| {
+            (bbox.1..bbox.3).into_iter().for_each(|y| {
                 let yi = (y as f64 - ny2) / nmin;
-                if e.inside(yi, xi) {
-                    let mut b = arr[y * ny + x].lock().unwrap();
+                if e.inside(xi, yi) {
+                    let mut b = arr[(ny - y) * nx + x].lock().unwrap();
                     *b = *b + e.intensity();
                 }
             })
@@ -129,11 +140,11 @@ fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     for y in 0..ny {
         for x in 0..nx {
             let xi = (x as f64 - nx2) / nmin;
-            let yi = (y as f64 - ny2) / nmin;
+            let yi = ((ny-y) as f64 - ny2) / nmin;
             arr.push(
                 ellipses
                     .iter()
-                    .filter(|e| e.inside(yi, xi))
+                    .filter(|e| e.inside(xi, yi))
                     .map(|e| e.intensity())
                     .sum(),
             );
