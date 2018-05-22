@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["shepplogan","Original Shepp-Logan phantom"],["shepplogan_modified","Modified Shepp-Logan phantom with better contrast"]]});
+initSidebarItems({"fn":[["phantom","Creates a phantom based on given ellipses"],["shepplogan","Original Shepp-Logan phantom"],["shepplogan_modified","Modified Shepp-Logan phantom with better contrast"]],"struct":[["Ellipse","ellipse"]]});
