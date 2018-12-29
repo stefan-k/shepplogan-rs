@@ -179,6 +179,10 @@ pub fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
 }
 
 #[cfg(feature = "parallel")]
+/// Creates a phantom based on given ellipses
+///
+/// Besides `nx` and `ny`, which define the number of pixels in `x` and `y` direction, this
+/// function also requires a vector of Ellipses.
 pub fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     let arr: Vec<Mutex<f64>> = (0..(nx * ny))
         .into_par_iter()
@@ -205,6 +209,10 @@ pub fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
 }
 
 #[cfg(feature = "slow_impl")]
+/// Creates a phantom based on given ellipses
+///
+/// Besides `nx` and `ny`, which define the number of pixels in `x` and `y` direction, this
+/// function also requires a vector of Ellipses.
 pub fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     let mut arr = Vec::with_capacity(nx * ny);
     let nx2 = (nx as f64) / 2.0;
