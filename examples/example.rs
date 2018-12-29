@@ -20,10 +20,11 @@ fn main() {
     image::save_buffer(
         "shepp_logan.png",
         &phantom,
-        ny as u32,
         nx as u32,
+        ny as u32,
         image::Gray(8),
-    ).unwrap();
+    )
+    .unwrap();
 
     // Modified Shepp-Logan phantom
     let phantom = shepplogan::shepplogan_modified(nx, ny);
@@ -35,5 +36,6 @@ fn main() {
         nx as u32,
         ny as u32,
         image::Gray(8),
-    ).unwrap();
+    )
+    .unwrap();
 }
