@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -226,7 +226,15 @@
 <span id="226">226</span>
 <span id="227">227</span>
 <span id="228">228</span>
-</pre><pre class="rust ">
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+</pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2018 Stefan Kroboth</span>
 <span class="comment">//</span>
 <span class="comment">// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
@@ -241,11 +249,11 @@
 <span class="doccomment">//! The Shepp-Logan phantom is a numerical phantom which is defined as the sum of 10 ellipses. It</span>
 <span class="doccomment">//! is often used as a test image for image reconstruction algorithms.</span>
 <span class="doccomment">//! This crate provides a dependency-free, efficient implementation for creating Shepp-Logan</span>
-<span class="doccomment">//! phantoms in 2D. </span>
+<span class="doccomment">//! phantoms in 2D.</span>
 <span class="doccomment">//! The following results were obtained with `cargo bench` on an Intel Core i7 with 2.70GHz:</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Resolution | time        | fps   </span>
-<span class="doccomment">//! -----------|-------------|------ </span>
+<span class="doccomment">//! -----------|-------------|------</span>
 <span class="doccomment">//! 128x128    |   111,000ns | 9000  </span>
 <span class="doccomment">//! 256x256    |   440,000ns | 2200  </span>
 <span class="doccomment">//! 512x512    | 1,780,000ns |  560  </span>
@@ -259,7 +267,7 @@
 <span class="doccomment">//! ```toml</span>
 <span class="doccomment">//! shepplogan = &quot;^1&quot;</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! # Example</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
@@ -288,7 +296,7 @@
 <span class="doccomment">//! let (nx, ny) = (256, 320);</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Define two ellipses</span>
-<span class="doccomment">//! let ellipses = </span>
+<span class="doccomment">//! let ellipses =</span>
 <span class="doccomment">//!     [</span>
 <span class="doccomment">//!         Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98),</span>
 <span class="doccomment">//!         Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 2.0),</span>
@@ -296,7 +304,7 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let ph = phantom(&amp;ellipses, nx, ny);</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! </span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! This will create a phantom consisting of two ellipses.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # References</span>
@@ -312,7 +320,7 @@
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rayon</span>;
 
 <span class="kw">mod</span> <span class="ident">ellipse</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ellipse</span>::<span class="ident">Ellipse</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">ellipse</span>::<span class="ident">Ellipse</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parallel&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">rayon</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parallel&quot;</span>)]</span>
@@ -399,7 +407,7 @@
             <span class="kw">for</span> <span class="ident">y</span> <span class="kw">in</span> <span class="ident">bbox</span>.<span class="number">1</span>..<span class="ident">bbox</span>.<span class="number">3</span> {
                 <span class="kw">let</span> <span class="ident">yi</span> <span class="op">=</span> (<span class="ident">y</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">ny2</span>) <span class="op">/</span> <span class="ident">nmin</span>;
                 <span class="kw">if</span> <span class="ident">e</span>.<span class="ident">inside</span>(<span class="ident">xi</span>, <span class="ident">yi</span>) {
-                    <span class="ident">arr</span>[(<span class="ident">ny</span><span class="op">-</span><span class="ident">y</span>) <span class="op">*</span> <span class="ident">nx</span> <span class="op">+</span> <span class="ident">x</span>] <span class="op">+=</span> <span class="ident">e</span>.<span class="ident">intensity</span>();
+                    <span class="ident">arr</span>[(<span class="ident">ny</span> <span class="op">-</span> <span class="ident">y</span>) <span class="op">*</span> <span class="ident">nx</span> <span class="op">+</span> <span class="ident">x</span>] <span class="op">+=</span> <span class="ident">e</span>.<span class="ident">intensity</span>();
                 }
             }
         }
@@ -408,6 +416,10 @@
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;parallel&quot;</span>)]</span>
+<span class="doccomment">/// Creates a phantom based on given ellipses</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Besides `nx` and `ny`, which define the number of pixels in `x` and `y` direction, this</span>
+<span class="doccomment">/// function also requires a vector of Ellipses.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">phantom</span>(<span class="ident">ellipses</span>: <span class="kw-2">&amp;</span>[<span class="ident">Ellipse</span>], <span class="ident">nx</span>: <span class="ident">usize</span>, <span class="ident">ny</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">arr</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> <span class="op">=</span> (<span class="number">0</span>..(<span class="ident">nx</span> <span class="op">*</span> <span class="ident">ny</span>))
         .<span class="ident">into_par_iter</span>()
@@ -434,6 +446,10 @@
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;slow_impl&quot;</span>)]</span>
+<span class="doccomment">/// Creates a phantom based on given ellipses</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Besides `nx` and `ny`, which define the number of pixels in `x` and `y` direction, this</span>
+<span class="doccomment">/// function also requires a vector of Ellipses.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">phantom</span>(<span class="ident">ellipses</span>: <span class="kw-2">&amp;</span>[<span class="ident">Ellipse</span>], <span class="ident">nx</span>: <span class="ident">usize</span>, <span class="ident">ny</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">arr</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="ident">nx</span> <span class="op">*</span> <span class="ident">ny</span>);
     <span class="kw">let</span> <span class="ident">nx2</span> <span class="op">=</span> (<span class="ident">nx</span> <span class="kw">as</span> <span class="ident">f64</span>) <span class="op">/</span> <span class="number">2.0</span>;
@@ -443,7 +459,7 @@
     <span class="kw">for</span> <span class="ident">y</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">ny</span> {
         <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">nx</span> {
             <span class="kw">let</span> <span class="ident">xi</span> <span class="op">=</span> (<span class="ident">x</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">nx2</span>) <span class="op">/</span> <span class="ident">nmin</span>;
-            <span class="kw">let</span> <span class="ident">yi</span> <span class="op">=</span> ((<span class="ident">ny</span><span class="op">-</span><span class="ident">y</span>) <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">ny2</span>) <span class="op">/</span> <span class="ident">nmin</span>;
+            <span class="kw">let</span> <span class="ident">yi</span> <span class="op">=</span> ((<span class="ident">ny</span> <span class="op">-</span> <span class="ident">y</span>) <span class="kw">as</span> <span class="ident">f64</span> <span class="op">-</span> <span class="ident">ny2</span>) <span class="op">/</span> <span class="ident">nmin</span>;
             <span class="ident">arr</span>.<span class="ident">push</span>(
                 <span class="ident">ellipses</span>
                     .<span class="ident">iter</span>()
@@ -455,5 +471,5 @@
     }
     <span class="ident">arr</span>
 }
-</pre>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "shepplogan";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>
+</pre></div>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "shepplogan";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
