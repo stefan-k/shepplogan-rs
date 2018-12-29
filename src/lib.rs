@@ -12,11 +12,11 @@
 //! The Shepp-Logan phantom is a numerical phantom which is defined as the sum of 10 ellipses. It
 //! is often used as a test image for image reconstruction algorithms.
 //! This crate provides a dependency-free, efficient implementation for creating Shepp-Logan
-//! phantoms in 2D. 
+//! phantoms in 2D.
 //! The following results were obtained with `cargo bench` on an Intel Core i7 with 2.70GHz:
 //!
 //! Resolution | time        | fps   
-//! -----------|-------------|------ 
+//! -----------|-------------|------
 //! 128x128    |   111,000ns | 9000  
 //! 256x256    |   440,000ns | 2200  
 //! 512x512    | 1,780,000ns |  560  
@@ -30,7 +30,7 @@
 //! ```toml
 //! shepplogan = "^1"
 //! ```
-//! 
+//!
 //! # Example
 //!
 //! ```rust
@@ -59,7 +59,7 @@
 //! let (nx, ny) = (256, 320);
 //!
 //! // Define two ellipses
-//! let ellipses = 
+//! let ellipses =
 //!     [
 //!         Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98),
 //!         Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 2.0),
@@ -67,7 +67,7 @@
 //!
 //! let ph = phantom(&ellipses, nx, ny);
 //! ```
-//! 
+//!
 //! This will create a phantom consisting of two ellipses.
 //!
 //! # References
@@ -83,7 +83,7 @@
 extern crate rayon;
 
 mod ellipse;
-pub use ellipse::Ellipse;
+pub use crate::ellipse::Ellipse;
 #[cfg(feature = "parallel")]
 use rayon::prelude::*;
 #[cfg(feature = "parallel")]
@@ -170,7 +170,7 @@ pub fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
             for y in bbox.1..bbox.3 {
                 let yi = (y as f64 - ny2) / nmin;
                 if e.inside(xi, yi) {
-                    arr[(ny-y) * nx + x] += e.intensity();
+                    arr[(ny - y) * nx + x] += e.intensity();
                 }
             }
         }
@@ -214,7 +214,7 @@ pub fn phantom(ellipses: &[Ellipse], nx: usize, ny: usize) -> Vec<f64> {
     for y in 0..ny {
         for x in 0..nx {
             let xi = (x as f64 - nx2) / nmin;
-            let yi = ((ny-y) as f64 - ny2) / nmin;
+            let yi = ((ny - y) as f64 - ny2) / nmin;
             arr.push(
                 ellipses
                     .iter()
