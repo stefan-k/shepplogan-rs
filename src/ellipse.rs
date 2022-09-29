@@ -26,7 +26,6 @@ pub struct Ellipse {
     /// intensity
     intensity: f64,
     /// bounding box
-    #[cfg(not(feature = "slow_impl"))]
     bounding_box: (f64, f64, f64, f64),
 }
 
@@ -43,16 +42,20 @@ impl Ellipse {
         let theta = theta.to_radians();
         let theta_sin = theta.sin();
         let theta_cos = theta.cos();
-        #[cfg(not(feature = "slow_impl"))]
-        let bbx = ((theta_cos * major_axis).powi(2) + (theta_sin * minor_axis).powi(2)).sqrt();
-        #[cfg(not(feature = "slow_impl"))]
-        let bby = ((theta_sin * major_axis).powi(2) + (theta_cos * minor_axis).powi(2)).sqrt();
-        #[cfg(not(feature = "slow_impl"))]
+        let theta_pi2_sin = (theta + std::f64::consts::FRAC_PI_2).sin();
+        let theta_pi2_cos = (theta + std::f64::consts::FRAC_PI_2).cos();
+        let ux = major_axis * theta_cos;
+        let uy = major_axis * theta_sin;
+        let vx = minor_axis * theta_pi2_cos;
+        let vy = minor_axis * theta_pi2_sin;
+        let halfwidth = (ux.powi(2) + vx.powi(2)).sqrt();
+        let halfheight = (uy.powi(2) + vy.powi(2)).sqrt();
+
         let bounding_box = (
-            (center_x - bbx),
-            (center_y - bby),
-            (center_x + bbx),
-            (center_y + bby),
+            (center_x - halfwidth),
+            (center_y - halfheight),
+            (center_x + halfwidth),
+            (center_y + halfheight),
         );
         Ellipse {
             center_x,
@@ -62,7 +65,6 @@ impl Ellipse {
             theta_sin,
             theta_cos,
             intensity,
-            #[cfg(not(feature = "slow_impl"))]
             bounding_box,
         }
     }
@@ -72,7 +74,8 @@ impl Ellipse {
         (self.theta_cos * (x - self.center_x) + self.theta_sin * (y - self.center_y)).powi(2)
             / self.major_axis.powi(2)
             + (self.theta_sin * (x - self.center_x) - self.theta_cos * (y - self.center_y)).powi(2)
-                / self.minor_axis.powi(2) <= 1.0
+                / self.minor_axis.powi(2)
+            <= 1.0
     }
 
     /// Return intensity of the ellipse
@@ -80,23 +83,24 @@ impl Ellipse {
         self.intensity
     }
 
-    #[cfg(not(feature = "slow_impl"))]
     /// Return the bounding box of the ellipse
-    pub fn bounding_box(&self, nx: usize, ny: usize) -> (usize, usize, usize, usize) {
-        let bx1 = ((self.bounding_box.0 + 1.0) * (nx as f64) / 2.0).floor();
-        let by1 = ((self.bounding_box.1 + 1.0) * (ny as f64) / 2.0).floor();
-        let bx2 = ((self.bounding_box.2 + 1.0) * (nx as f64) / 2.0).ceil();
-        let by2 = ((self.bounding_box.3 + 1.0) * (ny as f64) / 2.0).ceil();
-        let out: Vec<usize> = [bx1, by1, bx2, by2]
-            .iter()
-            .zip([nx, ny, nx, ny].iter())
+    pub fn bounding_box(&self, nx: u32, ny: u32) -> (u32, u32, u32, u32) {
+        let nx_f64 = f64::from(nx) / 2.0;
+        let ny_f64 = f64::from(ny) / 2.0;
+        let n_min = f64::from(std::cmp::min(nx, ny)) / 2.0;
+        let bx1 = ((self.bounding_box.0) * n_min + nx_f64).floor();
+        let by1 = ((self.bounding_box.1) * n_min + ny_f64).floor();
+        let bx2 = ((self.bounding_box.2) * n_min + nx_f64).ceil();
+        let by2 = ((self.bounding_box.3) * n_min + ny_f64).ceil();
+        let out: Vec<u32> = [(bx1, nx), (by1, ny), (bx2, nx), (by2, ny)]
+            .into_iter()
             .map(|(x, n)| {
-                if *x < 0.0 {
+                if x < 0.0 {
                     0
-                } else if *x > *n as f64 {
-                    *n
+                } else if x >= f64::from(n) {
+                    n - 1
                 } else {
-                    *x as usize
+                    x as u32
                 }
             })
             .collect();
