@@ -9,8 +9,60 @@
 //!
 //! Create ellipses...?
 
+pub struct Shape {
+    intensity: f64,
+    kind: ShapeKind,
+}
+
+enum ShapeKind {
+    Ellipse(Ellipse),
+}
+
+impl Shape {
+    /// Create an ellipse
+    ///
+    /// Todo
+    pub fn ellipse(
+        center_x: f64,
+        center_y: f64,
+        major_axis: f64,
+        minor_axis: f64,
+        theta: f64,
+        intensity: f64,
+    ) -> Shape {
+        Shape {
+            intensity,
+            kind: ShapeKind::Ellipse(Ellipse::new(
+                center_x, center_y, major_axis, minor_axis, theta,
+            )),
+        }
+    }
+
+    /// Checks if a point is inside a shape
+    #[inline(always)]
+    pub fn inside(&self, x: f64, y: f64) -> bool {
+        match &self.kind {
+            ShapeKind::Ellipse(shape) => shape.inside(x, y),
+        }
+    }
+
+    /// Return intensity of the shape
+    #[inline(always)]
+    pub fn intensity(&self) -> f64 {
+        self.intensity
+    }
+
+    /// Return the bounding box of the ellipse
+    #[inline(always)]
+    pub fn bounding_box(&self, nx: u32, ny: u32) -> (u32, u32, u32, u32) {
+        match &self.kind {
+            ShapeKind::Ellipse(shape) => shape.bounding_box(nx, ny),
+        }
+    }
+}
+
 /// Ellipse
-pub struct Ellipse {
+struct Ellipse {
     /// x-coordinate of center
     center_x: f64,
     /// y-coordinate of center
@@ -23,22 +75,13 @@ pub struct Ellipse {
     theta_sin: f64,
     /// cos(theta)
     theta_cos: f64,
-    /// intensity
-    intensity: f64,
     /// bounding box
     bounding_box: (f64, f64, f64, f64),
 }
 
 impl Ellipse {
     /// Constructor
-    pub fn new(
-        center_x: f64,
-        center_y: f64,
-        major_axis: f64,
-        minor_axis: f64,
-        theta: f64,
-        intensity: f64,
-    ) -> Self {
+    pub fn new(center_x: f64, center_y: f64, major_axis: f64, minor_axis: f64, theta: f64) -> Self {
         let theta = theta.to_radians();
         let theta_sin = theta.sin();
         let theta_cos = theta.cos();
@@ -64,12 +107,12 @@ impl Ellipse {
             minor_axis,
             theta_sin,
             theta_cos,
-            intensity,
             bounding_box,
         }
     }
 
     /// Checks if a point is inside the ellipse
+    #[inline(always)]
     pub fn inside(&self, x: f64, y: f64) -> bool {
         (self.theta_cos * (x - self.center_x) + self.theta_sin * (y - self.center_y)).powi(2)
             / self.major_axis.powi(2)
@@ -78,12 +121,8 @@ impl Ellipse {
             <= 1.0
     }
 
-    /// Return intensity of the ellipse
-    pub fn intensity(&self) -> f64 {
-        self.intensity
-    }
-
     /// Return the bounding box of the ellipse
+    #[inline(always)]
     pub fn bounding_box(&self, nx: u32, ny: u32) -> (u32, u32, u32, u32) {
         let nx_f64 = f64::from(nx) / 2.0;
         let ny_f64 = f64::from(ny) / 2.0;
