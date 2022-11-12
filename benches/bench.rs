@@ -14,7 +14,7 @@ extern crate test;
 
 #[cfg(test)]
 mod tests {
-    use shepplogan::{shepplogan, shepplogan_modified};
+    use shepplogan::{shepplogan, shepplogan_modified, SheppLogan};
     use test::{black_box, Bencher};
 
     // 128x128
@@ -59,6 +59,27 @@ mod tests {
     fn shepplogan_512_modified(b: &mut Bencher) {
         b.iter(|| {
             black_box(shepplogan_modified(512, 512));
+        });
+    }
+
+    #[bench]
+    fn shepplogan_128_const(b: &mut Bencher) {
+        b.iter(|| {
+            black_box(SheppLogan::<128, 128>::new());
+        });
+    }
+
+    #[bench]
+    fn shepplogan_256_const(b: &mut Bencher) {
+        b.iter(|| {
+            black_box(SheppLogan::<256, 256>::new());
+        });
+    }
+
+    #[bench]
+    fn shepplogan_512_const(b: &mut Bencher) {
+        b.iter(|| {
+            black_box(SheppLogan::<512, 512>::new());
         });
     }
 }

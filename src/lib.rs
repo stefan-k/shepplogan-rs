@@ -148,10 +148,12 @@ pub fn phantom(ellipses: &[Ellipse], nx: u32, ny: u32) -> Vec<f64> {
         for x in bbox.0..bbox.2 {
             let xi = (x as f64 - nx2) / nmin;
             for y in bbox.1..bbox.3 {
-                if x == bbox.0 || x == bbox.2 - 1 || y == bbox.1 || y == bbox.3 - 1 {
-                    arr[((ny - y - 1) * nx + x - 1) as usize] = 1.0;
-                }
+                // if x == bbox.0 || x == bbox.2 - 1 || y == bbox.1 || y == bbox.3 - 1 {
+                //     arr[((ny - y - 1) * nx + x - 1) as usize] = 1.0;
+                // }
                 let yi = (y as f64 - ny2) / nmin;
+
+                // arr[((ny - y - 1) * nx + x - 1) as usize] += e.inside_2(xi, yi);
                 if e.inside(xi, yi) {
                     arr[((ny - y - 1) * nx + x - 1) as usize] += e.intensity();
                 }
@@ -159,4 +161,60 @@ pub fn phantom(ellipses: &[Ellipse], nx: u32, ny: u32) -> Vec<f64> {
         }
     }
     arr
+}
+
+/// TODOOOOO
+pub struct SheppLogan<const M: usize, const N: usize> {
+    data: Box<[[f64; M]; N]>,
+}
+
+impl<const M: usize, const N: usize> SheppLogan<M, N> {
+    /// todoooo
+    pub fn new() -> SheppLogan<M, N> {
+        let mut data: Box<[[f64; M]; N]> = Box::new([[0.0; M]; N]);
+        let ellipses = [
+            Ellipse::new(0.0, 0.35, 0.21, 0.25, 0.0, 0.1),
+            Ellipse::new(0.0, 0.1, 0.046, 0.046, 0.0, 0.1),
+            Ellipse::new(0.0, -0.1, 0.046, 0.046, 0.0, 0.1),
+            Ellipse::new(-0.08, -0.605, 0.046, 0.023, 0.0, 0.1),
+            Ellipse::new(0.0, -0.605, 0.023, 0.023, 0.0, 0.1),
+            Ellipse::new(0.06, -0.605, 0.023, 0.046, 0.0, 0.1),
+            Ellipse::new(0.22, 0.0, 0.11, 0.31, -18.0, -0.2),
+            Ellipse::new(-0.22, 0.0, 0.16, 0.41, 18.0, -0.2),
+            Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.8),
+            Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 1.0),
+        ];
+        let nx2 = f64::from(N as u32) / 2.0;
+        let ny2 = f64::from(M as u32) / 2.0;
+        let nmin = f64::from(std::cmp::min(N, M) as u32) / 2.0;
+
+        for e in ellipses.iter() {
+            let bbox = e.bounding_box_usize(N, M);
+            for y in bbox.1..bbox.3 {
+                let yi = (y as f64 - ny2) / nmin;
+                for x in bbox.0..bbox.2 {
+                    // if x == bbox.0 || x == bbox.2 - 1 || y == bbox.1 || y == bbox.3 - 1 {
+                    //     data[y as usize][x as usize] = 1.0;
+                    // }
+                    let xi = (x as f64 - nx2) / nmin;
+                    data[y][x] += e.inside_2(xi, yi);
+                    // data[y][x] += if e.inside(xi, yi) { e.intensity() } else { 0.0 };
+                    // if e.inside(xi, yi) {
+                    //     data[y][x] += e.intensity();
+                    // }
+                }
+            }
+        }
+        SheppLogan { data }
+    }
+
+    /// todo
+    pub fn to_vec(&self) -> Vec<f64> {
+        self.data
+            .iter()
+            .rev()
+            .flat_map(|v| v.iter())
+            .cloned()
+            .collect()
+    }
 }
