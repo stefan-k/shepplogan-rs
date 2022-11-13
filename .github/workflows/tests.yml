@@ -64,7 +64,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           components: clippy
-          toolchain: beta
+          toolchain: nightly
           override: true
 
       - name: Run clippy

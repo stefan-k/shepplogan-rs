@@ -7,6 +7,7 @@ mod ellipse;
 
 use ellipse::Ellipse;
 
+/// A shape (TODO)
 pub struct Shape {
     intensity: f64,
     kind: ShapeKind,
