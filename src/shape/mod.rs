@@ -5,7 +5,7 @@
 
 mod ellipse;
 
-pub use ellipse::Ellipse;
+use ellipse::Ellipse;
 
 pub struct Shape {
     intensity: f64,

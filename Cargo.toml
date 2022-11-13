@@ -18,7 +18,10 @@ exclude = [
 [dependencies]
 
 [dev-dependencies]
+approx = "0.5.1"
 image = "0.24.4"
+quickcheck = "1.0.3"
+quickcheck_macros = "1.0.0"
 
 [features]
 default = []
