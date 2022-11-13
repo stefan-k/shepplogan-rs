@@ -22,7 +22,7 @@ impl Phantom {
 
     /// Scales the value of the phantom with `factor`.
     pub fn scale(mut self, factor: f64) -> Phantom {
-        self.data.iter_mut().map(|x| *x * factor).count();
+        self.data = self.data.into_iter().map(|x| x * factor).collect();
         self.minmax = if let Some((min, max)) = self.minmax {
             Some((min * factor, max * factor))
         } else {

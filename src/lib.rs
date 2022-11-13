@@ -32,7 +32,6 @@
 //! # Example
 //!
 //! ```rust
-//! extern crate shepplogan;
 //! use shepplogan::{shepplogan, shepplogan_modified};
 //!
 //! // Dimensions of the image grid
@@ -50,8 +49,7 @@
 //! You can also create your own phantom by defining ellipses:
 //!
 //! ```rust
-//! extern crate shepplogan;
-//! use shepplogan::{phantom, Ellipse};
+//! use shepplogan::{Phantom, Shape};
 //!
 //! // Dimensions of the image grid
 //! let (nx, ny) = (256, 320);
@@ -59,11 +57,11 @@
 //! // Define two ellipses
 //! let ellipses =
 //!     [
-//!         Ellipse::new(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98),
-//!         Ellipse::new(0.0, 0.0, 0.69, 0.92, 0.0, 2.0),
+//!         Shape::ellipse(0.0, -0.0184, 0.6624, 0.874, 0.0, -0.98),
+//!         Shape::ellipse(0.0, 0.0, 0.69, 0.92, 0.0, 2.0),
 //!     ];
 //!
-//! let ph = phantom(&ellipses, nx, ny);
+//! let ph = Phantom::new(nx, ny, &ellipses);
 //! ```
 //!
 //! This will create a phantom consisting of two ellipses.
@@ -77,6 +75,12 @@
 //! of Mathematical Modelling, Technical University of Denmark (1996)
 
 #![warn(missing_docs)]
+
+#[cfg(test)]
+extern crate quickcheck;
+#[cfg(test)]
+#[macro_use(quickcheck)]
+extern crate quickcheck_macros;
 
 mod phantom;
 mod shape;
