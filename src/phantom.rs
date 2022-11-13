@@ -16,7 +16,7 @@ pub struct Phantom {
 impl Phantom {
     /// Create a new phantom with size `nx` times `ny` given a set of `ellipses`.
     pub fn new(nx: u32, ny: u32, ellipses: &[Shape]) -> Self {
-        let data = phantom(&ellipses, nx, ny);
+        let data = phantom(ellipses, nx, ny);
         Phantom { data, minmax: None }
     }
 
