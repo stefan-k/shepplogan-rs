@@ -4,11 +4,11 @@
 // copied, modified, or distributed except according to those terms.
 
 fn main() {
-    // let nx = 256;
-    // let ny = 320;
+    let nx = 256;
+    let ny = 320;
     // // let ny = 256;
-    let nx = 1024;
-    let ny = 1280;
+    // let nx = 1024;
+    // let ny = 1280;
     // let ny = 1024;
 
     // // Original Shepp-Logan phantom
