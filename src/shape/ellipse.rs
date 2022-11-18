@@ -108,6 +108,7 @@ impl Ellipse {
         (out[0], out[1], out[2], out[3])
     }
 }
+
 #[cfg(test)]
 mod tests {
     use super::Ellipse;
@@ -119,7 +120,7 @@ mod tests {
     impl quickcheck::Arbitrary for Float {
         fn arbitrary(g: &mut quickcheck::Gen) -> Self {
             loop {
-                let val = f64::arbitrary(g).abs() % 1000000.0;
+                let val = f64::arbitrary(g).abs() % 100000.0;
                 if !val.is_nan() {
                     return Float(val);
                 }
@@ -185,5 +186,33 @@ mod tests {
         assert_abs_diff_eq!(bounding_box.1, bounding_box_true.1);
         assert_abs_diff_eq!(bounding_box.2, bounding_box_true.2);
         assert_abs_diff_eq!(bounding_box.3, bounding_box_true.3);
+    }
+
+    #[quickcheck]
+    fn test_inside(
+        center_x: Float,
+        center_y: Float,
+        major_axis: Float,
+        minor_axis: Float,
+        theta: Float,
+        x: Float,
+        y: Float,
+    ) -> bool {
+        let x = x.0;
+        let y = y.0;
+
+        let ellipse = Ellipse::new(center_x.0, center_y.0, major_axis.0, minor_axis.0, theta.0);
+
+        let inside = (ellipse.theta_cos * (x - ellipse.center_x)
+            + ellipse.theta_sin * (y - ellipse.center_y))
+            .powi(2)
+            / ellipse.major_axis_squared
+            + (ellipse.theta_sin * (x - ellipse.center_x)
+                - ellipse.theta_cos * (y - ellipse.center_y))
+                .powi(2)
+                / ellipse.minor_axis_squared
+            <= 1.0;
+
+        ellipse.inside(x, y) == inside
     }
 }
