@@ -6,17 +6,18 @@
 use super::BoundingBox;
 
 /// Representation of an Ellipse.
-pub(super) struct Ellipse {
+#[derive(PartialEq, Clone)]
+pub(crate) struct Ellipse {
     /// x-coordinate of center
-    center_x: f64,
+    pub(crate) center_x: f64,
     /// y-coordinate of center
-    center_y: f64,
+    pub(crate) center_y: f64,
     /// major axis squared
-    major_axis: f64,
+    pub(crate) major_axis: f64,
     /// minor axis squared
-    minor_axis: f64,
+    pub(crate) minor_axis: f64,
     /// theta in degrees
-    theta: f64,
+    pub(crate) theta: f64,
 }
 
 impl Ellipse {
@@ -31,7 +32,7 @@ impl Ellipse {
     /// * `major_axis`: major axis length
     /// * `minor_axis`: minor axis length
     /// * `theta`: Rotation angle of the ellipse in degrees
-    pub(super) fn new(
+    pub(crate) fn new(
         center_x: f64,
         center_y: f64,
         major_axis: f64,
@@ -48,7 +49,7 @@ impl Ellipse {
     }
 
     #[inline(always)]
-    pub(super) fn on_canvas(&self, nx: u32, ny: u32) -> EllipseOnCanvas {
+    pub(crate) fn on_canvas(&self, nx: u32, ny: u32) -> EllipseOnCanvas {
         let Self {
             center_x,
             center_y,
@@ -113,6 +114,7 @@ impl Ellipse {
 }
 
 /// Representation of an Ellipse.
+#[derive(PartialEq, Clone)]
 pub(crate) struct EllipseOnCanvas {
     /// x-coordinate of center
     center_x: f64,
@@ -132,13 +134,13 @@ pub(crate) struct EllipseOnCanvas {
 
 impl EllipseOnCanvas {
     #[inline(always)]
-    pub(super) fn bounding_box(&self) -> BoundingBox {
+    pub(crate) fn bounding_box(&self) -> BoundingBox {
         self.bbox
     }
 
     /// Checks if a point is inside the ellipse
     #[inline(always)]
-    pub(super) fn inside(&self, x: f64, y: f64) -> bool {
+    pub(crate) fn inside(&self, x: f64, y: f64) -> bool {
         let x_diff = x - self.center_x;
         let y_diff = y - self.center_y;
         (self.theta_cos * x_diff + self.theta_sin * y_diff).powi(2) / self.major_axis_squared
