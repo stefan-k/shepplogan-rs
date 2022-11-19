@@ -167,6 +167,8 @@ mod tests {
     }
 
     #[quickcheck]
+    // Add a reason why this lint is allowed once the feature `lint_reasons` is stabilized.
+    #[allow(clippy::too_many_arguments)]
     fn test_shape_ellipse_on_canvas(
         center_x_input: FloatNotNan,
         center_y_input: FloatNotNan,
@@ -194,7 +196,7 @@ mod tests {
         .on_canvas(nx, ny);
 
         #[allow(irrefutable_let_patterns)]
-        if let ShapeKindOnCanvas::Ellipse(_) = ellipse_on_canvas.kind.clone() {
+        if let ShapeKindOnCanvas::Ellipse(_) = ellipse_on_canvas.kind {
             ellipse_on_canvas.intensity().to_ne_bytes() == intensity_input.to_ne_bytes()
         } else {
             false
@@ -202,6 +204,8 @@ mod tests {
     }
 
     #[quickcheck]
+    // Add a reason why this lint is allowed once the feature `lint_reasons` is stabilized.
+    #[allow(clippy::too_many_arguments)]
     fn test_shape_ellipse_on_canvas_inside_and_bbox(
         center_x_input: FloatNotNan,
         center_y_input: FloatNotNan,
