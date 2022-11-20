@@ -182,9 +182,9 @@ mod tests {
         let theta = theta.0;
 
         let shape = Shape::ellipse(center_x, center_y, major_axis, minor_axis, theta, 1.0);
-        let shape_on_canvas = shape.clone().on_canvas(nx, ny);
+        let shape_on_canvas = shape.on_canvas(nx, ny);
 
-        let phantom = Phantom::new(nx, ny, &[shape.clone()]);
+        let phantom = Phantom::new(nx, ny, &[shape]);
 
         assert!(phantom.minmax.is_none());
 
@@ -214,7 +214,7 @@ mod tests {
 
         let shape = Shape::ellipse(center_x, center_y, major_axis, minor_axis, theta, 1.0);
 
-        let mut phantom = Phantom::new(nx, ny, &[shape.clone()]);
+        let mut phantom = Phantom::new(nx, ny, &[shape]);
 
         assert!(phantom.minmax.is_none());
 
@@ -282,7 +282,7 @@ mod tests {
             .map(|(d1, d2)| assert_eq!(d1.to_ne_bytes(), d2.to_ne_bytes()))
             .count();
 
-        let phantom = Phantom::new(nx, ny, &[shape.clone()]);
+        let phantom = Phantom::new(nx, ny, &[shape]);
 
         let data1 = phantom.data.clone();
         let data2: Vec<u8> = phantom.into_vec_u8();
