@@ -15,12 +15,12 @@ pub struct Phantom {
 
 impl Phantom {
     /// Create a new phantom with size `nx` times `ny` given a set of `ellipses`.
-    pub fn new(nx: u32, ny: u32, ellipses: &[Shape]) -> Self {
-        let ellipses = ellipses
+    pub fn new(nx: u32, ny: u32, shapes: &[Shape]) -> Self {
+        let shapes = shapes
             .iter()
             .map(|shape| shape.on_canvas(nx, ny))
             .collect::<Vec<_>>();
-        let data = phantom(&ellipses, nx, ny);
+        let data = phantom(&shapes, nx, ny);
         Phantom { data, minmax: None }
     }
 
@@ -57,7 +57,7 @@ impl Phantom {
         }
     }
 
-    /// Returns the phantom as a flattened `Vec<f64>`.
+    /// Returns the phantom as a flattened `Vec<U>`. where `U: From<f64>`.
     pub fn into_vec<U: From<f64>>(self) -> Vec<U> {
         self.data.into_iter().map(|x| U::from(x)).collect()
     }
@@ -75,20 +75,89 @@ impl Phantom {
 ///
 /// Besides `nx` and `ny`, which define the number of pixels in `x` and `y` direction, this
 /// function also requires array of ShapeOnCanvas.
-fn phantom(ellipses: &[ShapeOnCanvas], nx: u32, ny: u32) -> Vec<f64> {
+fn phantom(shapes: &[ShapeOnCanvas], nx: u32, ny: u32) -> Vec<f64> {
     let mut arr = vec![0.0; (nx * ny) as usize];
 
-    for e in ellipses.iter() {
-        let bbox = e.bounding_box();
-        for x in bbox.x_low..bbox.x_high {
+    for shape in shapes.iter() {
+        let bbox = shape.bounding_box();
+        for x in bbox.x_low..=bbox.x_high {
             let xi = f64::from(x);
-            for y in bbox.y_low..bbox.y_high {
+            for y in bbox.y_low..=bbox.y_high {
                 let yi = f64::from(y);
-                if e.inside(xi, yi) {
-                    arr[((ny - y - 1) * nx + x - 1) as usize] += e.intensity();
+                if shape.inside(xi, yi) {
+                    arr[((ny - y - 1) * nx + x) as usize] += shape.intensity();
                 }
             }
         }
     }
     arr
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::Shape;
+
+    use super::phantom;
+
+    #[derive(Debug, Copy, Clone)]
+    struct FloatNotNanSmall(f64);
+
+    impl quickcheck::Arbitrary for FloatNotNanSmall {
+        fn arbitrary(g: &mut quickcheck::Gen) -> Self {
+            loop {
+                let val = f64::arbitrary(g).abs() % 10.0;
+                if !val.is_nan() && val.is_finite() {
+                    return FloatNotNanSmall(val);
+                }
+            }
+        }
+    }
+
+    #[derive(Debug, Copy, Clone)]
+    struct UnsignedInt32(u32);
+
+    impl quickcheck::Arbitrary for UnsignedInt32 {
+        fn arbitrary(g: &mut quickcheck::Gen) -> Self {
+            UnsignedInt32(u32::arbitrary(g) % 128)
+        }
+    }
+
+    #[quickcheck]
+    // Add a reason why this lint is allowed once the feature `lint_reasons` is stabilized.
+    #[allow(clippy::too_many_arguments)]
+    fn test_phantom(
+        center_x: FloatNotNanSmall,
+        center_y: FloatNotNanSmall,
+        major_axis: FloatNotNanSmall,
+        minor_axis: FloatNotNanSmall,
+        theta: FloatNotNanSmall,
+        nx: UnsignedInt32,
+        ny: UnsignedInt32,
+    ) {
+        let nx = nx.0;
+        let ny = ny.0;
+        let center_x = center_x.0;
+        let center_y = center_y.0;
+        let major_axis = major_axis.0;
+        let minor_axis = minor_axis.0;
+        let theta = theta.0;
+
+        let shape = Shape::ellipse(center_x, center_y, major_axis, minor_axis, theta, 1.0)
+            .on_canvas(nx, ny);
+
+        let phantom = phantom(&[shape.clone()], nx, ny);
+
+        for x in 0..nx {
+            for y in 0..ny {
+                let val = phantom[((ny - y - 1) * nx + x) as usize];
+                let inside = shape.inside(f64::from(x), f64::from(y));
+                // println!("x: {} | y: {} | val: {} | inside: {}", x, y, val, inside);
+                if inside {
+                    assert_eq!(val.to_ne_bytes(), 1.0f64.to_ne_bytes());
+                } else {
+                    assert_eq!(val.to_ne_bytes(), 0.0f64.to_ne_bytes());
+                }
+            }
+        }
+    }
 }
