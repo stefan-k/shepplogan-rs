@@ -57,9 +57,9 @@ impl Phantom {
         }
     }
 
-    /// Returns the phantom as a flattened `Vec<U>`. where `U: From<f64>`.
-    pub fn into_vec<U: From<f64>>(self) -> Vec<U> {
-        self.data.into_iter().map(|x| U::from(x)).collect()
+    /// Returns the phantom as a flattened `Vec<f64>`.
+    pub fn into_vec(self) -> Vec<f64> {
+        self.data
     }
 
     /// Returns the phantom as a `Vec<u8>`
@@ -95,7 +95,7 @@ fn phantom(shapes: &[ShapeOnCanvas], nx: u32, ny: u32) -> Vec<f64> {
 
 #[cfg(test)]
 mod tests {
-    use crate::Shape;
+    use crate::{Phantom, Shape};
 
     use super::phantom;
 
@@ -159,5 +159,138 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[quickcheck]
+    // Add a reason why this lint is allowed once the feature `lint_reasons` is stabilized.
+    #[allow(clippy::too_many_arguments)]
+    fn test_phantom_new(
+        center_x: FloatNotNanSmall,
+        center_y: FloatNotNanSmall,
+        major_axis: FloatNotNanSmall,
+        minor_axis: FloatNotNanSmall,
+        theta: FloatNotNanSmall,
+        nx: UnsignedInt32,
+        ny: UnsignedInt32,
+    ) {
+        let nx = nx.0;
+        let ny = ny.0;
+        let center_x = center_x.0;
+        let center_y = center_y.0;
+        let major_axis = major_axis.0;
+        let minor_axis = minor_axis.0;
+        let theta = theta.0;
+
+        let shape = Shape::ellipse(center_x, center_y, major_axis, minor_axis, theta, 1.0);
+        let shape_on_canvas = shape.clone().on_canvas(nx, ny);
+
+        let phantom = Phantom::new(nx, ny, &[shape.clone()]);
+
+        assert!(phantom.minmax.is_none());
+
+        for x in 0..nx {
+            for y in 0..ny {
+                let val = phantom.data[((ny - y - 1) * nx + x) as usize];
+                let inside = shape_on_canvas.inside(f64::from(x), f64::from(y));
+                // println!("x: {} | y: {} | val: {} | inside: {}", x, y, val, inside);
+                if inside {
+                    assert_eq!(val.to_ne_bytes(), 1.0f64.to_ne_bytes());
+                } else {
+                    assert_eq!(val.to_ne_bytes(), 0.0f64.to_ne_bytes());
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_phantom_extrema_scale() {
+        let nx = 64;
+        let ny = 64;
+        let center_x = 0.0;
+        let center_y = 0.0;
+        let major_axis = 0.9;
+        let minor_axis = 0.7;
+        let theta = 30.0;
+
+        let shape = Shape::ellipse(center_x, center_y, major_axis, minor_axis, theta, 1.0);
+
+        let mut phantom = Phantom::new(nx, ny, &[shape.clone()]);
+
+        assert!(phantom.minmax.is_none());
+
+        let (min, max) = phantom.extrema();
+
+        assert_eq!(min.to_ne_bytes(), 0.0f64.to_ne_bytes());
+        assert_eq!(max.to_ne_bytes(), 1.0f64.to_ne_bytes());
+
+        assert_eq!(
+            phantom.minmax.unwrap().0.to_ne_bytes(),
+            0.0f64.to_ne_bytes()
+        );
+        assert_eq!(
+            phantom.minmax.unwrap().1.to_ne_bytes(),
+            1.0f64.to_ne_bytes()
+        );
+
+        let mut phantom = phantom.scale(2.0);
+
+        assert_eq!(
+            phantom.minmax.unwrap().0.to_ne_bytes(),
+            0.0f64.to_ne_bytes()
+        );
+        assert_eq!(
+            phantom.minmax.unwrap().1.to_ne_bytes(),
+            2.0f64.to_ne_bytes()
+        );
+
+        let (min, max) = phantom.extrema();
+
+        assert_eq!(min.to_ne_bytes(), 0.0f64.to_ne_bytes());
+        assert_eq!(max.to_ne_bytes(), 2.0f64.to_ne_bytes());
+    }
+
+    #[quickcheck]
+    // Add a reason why this lint is allowed once the feature `lint_reasons` is stabilized.
+    #[allow(clippy::too_many_arguments)]
+    fn test_phantom_into_vec(
+        center_x: FloatNotNanSmall,
+        center_y: FloatNotNanSmall,
+        major_axis: FloatNotNanSmall,
+        minor_axis: FloatNotNanSmall,
+        theta: FloatNotNanSmall,
+        nx: UnsignedInt32,
+        ny: UnsignedInt32,
+    ) {
+        let nx = nx.0;
+        let ny = ny.0;
+        let center_x = center_x.0;
+        let center_y = center_y.0;
+        let major_axis = major_axis.0;
+        let minor_axis = minor_axis.0;
+        let theta = theta.0;
+
+        let shape = Shape::ellipse(center_x, center_y, major_axis, minor_axis, theta, 1.0);
+
+        let phantom = Phantom::new(nx, ny, &[shape.clone()]);
+
+        let data1 = phantom.data.clone();
+        let data2: Vec<f64> = phantom.into_vec();
+
+        data1
+            .into_iter()
+            .zip(data2.into_iter())
+            .map(|(d1, d2)| assert_eq!(d1.to_ne_bytes(), d2.to_ne_bytes()))
+            .count();
+
+        let phantom = Phantom::new(nx, ny, &[shape.clone()]);
+
+        let data1 = phantom.data.clone();
+        let data2: Vec<u8> = phantom.into_vec_u8();
+
+        data1
+            .into_iter()
+            .zip(data2.into_iter())
+            .map(|(d1, d2)| assert_eq!(d1.to_ne_bytes(), (d2 as f64).to_ne_bytes()))
+            .count();
     }
 }
