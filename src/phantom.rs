@@ -214,25 +214,18 @@ mod tests {
 
         let shape = Shape::ellipse(center_x, center_y, major_axis, minor_axis, theta, 1.0);
 
-        let mut phantom = Phantom::new(nx, ny, &[shape]);
+        let phantom = Phantom::new(nx, ny, &[shape]);
+
+        assert!(phantom.minmax.is_none());
+
+        let mut phantom = phantom.scale(2.0);
 
         assert!(phantom.minmax.is_none());
 
         let (min, max) = phantom.extrema();
 
         assert_eq!(min.to_ne_bytes(), 0.0f64.to_ne_bytes());
-        assert_eq!(max.to_ne_bytes(), 1.0f64.to_ne_bytes());
-
-        assert_eq!(
-            phantom.minmax.unwrap().0.to_ne_bytes(),
-            0.0f64.to_ne_bytes()
-        );
-        assert_eq!(
-            phantom.minmax.unwrap().1.to_ne_bytes(),
-            1.0f64.to_ne_bytes()
-        );
-
-        let mut phantom = phantom.scale(2.0);
+        assert_eq!(max.to_ne_bytes(), 2.0f64.to_ne_bytes());
 
         assert_eq!(
             phantom.minmax.unwrap().0.to_ne_bytes(),
@@ -243,10 +236,21 @@ mod tests {
             2.0f64.to_ne_bytes()
         );
 
+        let mut phantom = phantom.scale(2.0);
+
+        assert_eq!(
+            phantom.minmax.unwrap().0.to_ne_bytes(),
+            0.0f64.to_ne_bytes()
+        );
+        assert_eq!(
+            phantom.minmax.unwrap().1.to_ne_bytes(),
+            4.0f64.to_ne_bytes()
+        );
+
         let (min, max) = phantom.extrema();
 
         assert_eq!(min.to_ne_bytes(), 0.0f64.to_ne_bytes());
-        assert_eq!(max.to_ne_bytes(), 2.0f64.to_ne_bytes());
+        assert_eq!(max.to_ne_bytes(), 4.0f64.to_ne_bytes());
     }
 
     #[quickcheck]
