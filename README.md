@@ -1,4 +1,37 @@
-[![Build Status](https://travis-ci.org/stefan-k/shepplogan-rs.svg?branch=master)](https://travis-ci.org/stefan-k/shepplogan-rs)
+<p align="center">
+    shepplogan-rs
+</p>
+
+<p align="center">
+  <a href="https://docs.rs/shepplogan-rs">Docs (latest release)</a>
+  |
+  <a href="https://stefan-k.github.io/shepplogan-rs/shepplogan-rs/">Docs (main branch, TODO)</a>
+  |
+  <a href="https://github.com/stefan-k/shepplogan-rs/tree/main/examples">Examples (latest release)</a>
+</p>
+
+<p align="center">
+  <a href="https://crates.io/crates/shepplogan"
+    ><img
+      src="https://img.shields.io/crates/v/shepplogan?style=flat-square"
+      alt="Crates.io version"
+  /></a>
+  <a href="https://crates.io/crates/shepplogan"
+    ><img
+      src="https://img.shields.io/crates/d/shepplogan?style=flat-square"
+      alt="Crates.io downloads"
+  /></a>
+  <a href="https://github.com/stefan-k/shepplogan-rs/actions"
+    ><img
+      src="https://img.shields.io/github/workflow/status/stefan-k/shepplogan-rs/shepplogan/main?label=shepplogan CI&style=flat-square"
+      alt="GitHub Actions workflow status"
+  /></a>
+  <img
+    src="https://img.shields.io/crates/l/shepplogan?style=flat-square"
+    alt="License"
+  />
+</p>
+
 
 # shepplogan-rs
 
@@ -80,8 +113,8 @@ of Mathematical Modelling, Technical University of Denmark (1996)
 
 Licensed under either of
 
-  * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
-  * MIT License ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+ - Apache License, Version 2.0, ([LICENSE-APACHE](https://github.com/stefan-k/shepplogan-rs/blob/main/LICENSE-APACHE) or <http://www.apache.org/licenses/LICENSE-2.0>)
+ - MIT License ([LICENSE-MIT](https://github.com/stefan-k/shepplogan-rs/blob/main/LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
 
 at your option.
 
