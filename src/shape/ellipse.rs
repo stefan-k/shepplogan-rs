@@ -6,7 +6,7 @@
 use super::BoundingBox;
 
 /// Representation of an Ellipse.
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Debug)]
 pub(crate) struct Ellipse {
     /// x-coordinate of center
     pub(crate) center_x: f64,
@@ -114,7 +114,7 @@ impl Ellipse {
 }
 
 /// Representation of an Ellipse.
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Debug)]
 pub(crate) struct EllipseOnCanvas {
     /// x-coordinate of center
     center_x: f64,
