@@ -26,6 +26,11 @@
       src="https://img.shields.io/github/workflow/status/stefan-k/shepplogan-rs/shepplogan/main?label=shepplogan CI&style=flat-square"
       alt="GitHub Actions workflow status"
   /></a>
+  <a href="https://app.codecov.io/gh/stefan-k/shepplogan-rs/"
+    ><img
+      src="https://img.shields.io/codecov/c/github/stefan-k/shepplogan-rs?style=flat-square"
+      alt="Code coverage"
+  /></a>
   <img
     src="https://img.shields.io/crates/l/shepplogan?style=flat-square"
     alt="License"
