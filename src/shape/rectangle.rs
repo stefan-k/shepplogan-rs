@@ -65,24 +65,28 @@ impl Rectangle {
         let width_half = width / 2.0;
         let height_half = height / 2.0;
 
-        // Compute the corner points (unrotated)
-        let a_x = center_x - width_half;
-        let a_y = center_y - height_half;
-        let b_x = center_x - width_half;
-        let b_y = center_y + height_half;
-        let c_x = center_x + width_half;
-        let c_y = center_y + height_half;
-        let d_x = center_x + width_half;
-        let d_y = center_y - height_half;
+        // Compute the corner points (unrotated, unshifted)
+        let a_x = -width_half;
+        let a_y = -height_half;
+        let b_x = -width_half;
+        let b_y = height_half;
+        let c_x = width_half;
+        let c_y = height_half;
+        let d_x = width_half;
+        let d_y = -height_half;
 
         // Rotate the points
-        let rotate =
-            |x: f64, y: f64| (x * theta_cos - y * theta_sin, x * theta_sin + y * theta_cos);
+        let rotate_and_shift = |x: f64, y: f64| {
+            (
+                x * theta_cos - y * theta_sin + center_x,
+                x * theta_sin + y * theta_cos + center_y,
+            )
+        };
 
-        let (a_xr, a_yr) = rotate(a_x, a_y);
-        let (b_xr, b_yr) = rotate(b_x, b_y);
-        let (c_xr, c_yr) = rotate(c_x, c_y);
-        let (d_xr, d_yr) = rotate(d_x, d_y);
+        let (a_xr, a_yr) = rotate_and_shift(a_x, a_y);
+        let (b_xr, b_yr) = rotate_and_shift(b_x, b_y);
+        let (c_xr, c_yr) = rotate_and_shift(c_x, c_y);
+        let (d_xr, d_yr) = rotate_and_shift(d_x, d_y);
 
         // Now scale and shift them onto the new canvas
         let scale_shift = |x: f64, y: f64| (x * n_min + nx_half, y * n_min + ny_half);
@@ -93,7 +97,7 @@ impl Rectangle {
         let (d_xr, d_yr) = scale_shift(d_xr, d_yr);
 
         // compute the minimum and maximum coordinates for the bounding box.
-        let min_max = |arr: &[f64]| {
+        let min_max = |arr: &[f64], max: f64| {
             (
                 arr.iter()
                     .cloned()
@@ -104,14 +108,14 @@ impl Rectangle {
                 arr.iter()
                     .cloned()
                     .map(f64::ceil)
-                    .map(|x| if x > nx_f { nx_f } else { x })
+                    .map(|x| if x > max { max } else { x })
                     .max_by(|a, b| a.partial_cmp(b).unwrap())
                     .unwrap() as u32,
             )
         };
 
-        let (x_min, x_max) = min_max(&[a_xr, b_xr, c_xr, d_xr]);
-        let (y_min, y_max) = min_max(&[a_yr, b_yr, c_yr, d_yr]);
+        let (x_min, x_max) = min_max(&[a_xr, b_xr, c_xr, d_xr], nx_f);
+        let (y_min, y_max) = min_max(&[a_yr, b_yr, c_yr, d_yr], ny_f);
 
         // Helper variables to make computing whether a point is inside or not easier later on
         let ab = (b_xr - a_xr, b_yr - a_yr);
@@ -259,23 +263,29 @@ mod tests {
         let width_half = width / 2.0;
         let height_half = height / 2.0;
 
-        let a_x = center_x - width_half;
-        let a_y = center_y - height_half;
-        let b_x = center_x - width_half;
-        let b_y = center_y + height_half;
-        let c_x = center_x + width_half;
-        let c_y = center_y + height_half;
-        let d_x = center_x + width_half;
-        let d_y = center_y - height_half;
+        let a_x = -width_half;
+        let a_y = -height_half;
+        let b_x = -width_half;
+        let b_y = height_half;
+        let c_x = width_half;
+        let c_y = height_half;
+        let d_x = width_half;
+        let d_y = -height_half;
 
-        let rotate =
-            |x: f64, y: f64| (x * theta_cos - y * theta_sin, x * theta_sin + y * theta_cos);
+        // Rotate the points
+        let rotate_and_shift = |x: f64, y: f64| {
+            (
+                x * theta_cos - y * theta_sin + center_x,
+                x * theta_sin + y * theta_cos + center_y,
+            )
+        };
 
-        let (a_xr, a_yr) = rotate(a_x, a_y);
-        let (b_xr, b_yr) = rotate(b_x, b_y);
-        let (c_xr, c_yr) = rotate(c_x, c_y);
-        let (d_xr, d_yr) = rotate(d_x, d_y);
+        let (a_xr, a_yr) = rotate_and_shift(a_x, a_y);
+        let (b_xr, b_yr) = rotate_and_shift(b_x, b_y);
+        let (c_xr, c_yr) = rotate_and_shift(c_x, c_y);
+        let (d_xr, d_yr) = rotate_and_shift(d_x, d_y);
 
+        // Now scale and shift them onto the new canvas
         let scale_shift = |x: f64, y: f64| (x * n_min + nx_half, y * n_min + ny_half);
 
         let (a_xr, a_yr) = scale_shift(a_xr, a_yr);
@@ -283,7 +293,8 @@ mod tests {
         let (c_xr, c_yr) = scale_shift(c_xr, c_yr);
         let (d_xr, d_yr) = scale_shift(d_xr, d_yr);
 
-        let min_max = |arr: &[f64]| {
+        // compute the minimum and maximum coordinates for the bounding box.
+        let min_max = |arr: &[f64], max: f64| {
             (
                 arr.iter()
                     .cloned()
@@ -294,14 +305,14 @@ mod tests {
                 arr.iter()
                     .cloned()
                     .map(f64::ceil)
-                    .map(|x| if x > nx_f { nx_f } else { x })
+                    .map(|x| if x > max { max } else { x })
                     .max_by(|a, b| a.partial_cmp(b).unwrap())
                     .unwrap() as u32,
             )
         };
 
-        let (x_min, x_max) = min_max(&[a_xr, b_xr, c_xr, d_xr]);
-        let (y_min, y_max) = min_max(&[a_yr, b_yr, c_yr, d_yr]);
+        let (x_min, x_max) = min_max(&[a_xr, b_xr, c_xr, d_xr], nx_f);
+        let (y_min, y_max) = min_max(&[a_yr, b_yr, c_yr, d_yr], ny_f);
 
         let ab = (b_xr - a_xr, b_yr - a_yr);
         let bc = (c_xr - b_xr, c_yr - b_yr);
