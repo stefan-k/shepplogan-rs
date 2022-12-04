@@ -157,14 +157,28 @@ mod tests {
     use super::{Shape, ShapeKind, ShapeKindOnCanvas};
 
     #[derive(Debug, Copy, Clone)]
-    struct FloatNotNan(f64);
+    struct FloatLim(f64);
 
-    impl quickcheck::Arbitrary for FloatNotNan {
+    impl quickcheck::Arbitrary for FloatLim {
         fn arbitrary(g: &mut quickcheck::Gen) -> Self {
             loop {
-                let val = f64::arbitrary(g);
+                let val = f64::arbitrary(g) % 100000.0;
                 if !val.is_nan() && val.is_finite() {
-                    return FloatNotNan(val);
+                    return FloatLim(val);
+                }
+            }
+        }
+    }
+
+    #[derive(Debug, Copy, Clone)]
+    struct FloatLim64(f64);
+
+    impl quickcheck::Arbitrary for FloatLim64 {
+        fn arbitrary(g: &mut quickcheck::Gen) -> Self {
+            loop {
+                let val = f64::arbitrary(g) % 64.0;
+                if !val.is_nan() && val.is_finite() {
+                    return FloatLim64(val);
                 }
             }
         }
@@ -172,12 +186,12 @@ mod tests {
 
     #[quickcheck]
     fn test_shape_ellipse(
-        center_x_input: FloatNotNan,
-        center_y_input: FloatNotNan,
-        major_axis_input: FloatNotNan,
-        minor_axis_input: FloatNotNan,
-        theta_input: FloatNotNan,
-        intensity_input: FloatNotNan,
+        center_x_input: FloatLim,
+        center_y_input: FloatLim,
+        major_axis_input: FloatLim,
+        minor_axis_input: FloatLim,
+        theta_input: FloatLim,
+        intensity_input: FloatLim,
     ) -> bool {
         let center_x_input = center_x_input.0;
         let center_y_input = center_y_input.0;
@@ -210,12 +224,12 @@ mod tests {
     // Add a reason why this lint is allowed once the feature `lint_reasons` is stabilized.
     #[allow(clippy::too_many_arguments)]
     fn test_shape_ellipse_on_canvas(
-        center_x_input: FloatNotNan,
-        center_y_input: FloatNotNan,
-        major_axis_input: FloatNotNan,
-        minor_axis_input: FloatNotNan,
-        theta_input: FloatNotNan,
-        intensity_input: FloatNotNan,
+        center_x_input: FloatLim,
+        center_y_input: FloatLim,
+        major_axis_input: FloatLim,
+        minor_axis_input: FloatLim,
+        theta_input: FloatLim,
+        intensity_input: FloatLim,
         nx: u32,
         ny: u32,
     ) -> bool {
@@ -246,14 +260,14 @@ mod tests {
     // Add a reason why this lint is allowed once the feature `lint_reasons` is stabilized.
     #[allow(clippy::too_many_arguments)]
     fn test_shape_ellipse_on_canvas_inside_and_bbox(
-        center_x_input: FloatNotNan,
-        center_y_input: FloatNotNan,
-        major_axis_input: FloatNotNan,
-        minor_axis_input: FloatNotNan,
-        theta_input: FloatNotNan,
-        intensity_input: FloatNotNan,
-        x: FloatNotNan,
-        y: FloatNotNan,
+        center_x_input: FloatLim,
+        center_y_input: FloatLim,
+        major_axis_input: FloatLim,
+        minor_axis_input: FloatLim,
+        theta_input: FloatLim,
+        intensity_input: FloatLim,
+        x: FloatLim64,
+        y: FloatLim64,
     ) -> bool {
         let center_x_input = center_x_input.0;
         let center_y_input = center_y_input.0;
@@ -283,12 +297,12 @@ mod tests {
 
     #[quickcheck]
     fn test_shape_rectangle(
-        center_x_input: FloatNotNan,
-        center_y_input: FloatNotNan,
-        width_input: FloatNotNan,
-        height_input: FloatNotNan,
-        theta_input: FloatNotNan,
-        intensity_input: FloatNotNan,
+        center_x_input: FloatLim,
+        center_y_input: FloatLim,
+        width_input: FloatLim,
+        height_input: FloatLim,
+        theta_input: FloatLim,
+        intensity_input: FloatLim,
     ) -> bool {
         let center_x_input = center_x_input.0;
         let center_y_input = center_y_input.0;
@@ -321,12 +335,12 @@ mod tests {
     // Add a reason why this lint is allowed once the feature `lint_reasons` is stabilized.
     #[allow(clippy::too_many_arguments)]
     fn test_shape_rectangle_on_canvas(
-        center_x_input: FloatNotNan,
-        center_y_input: FloatNotNan,
-        width_input: FloatNotNan,
-        height_input: FloatNotNan,
-        theta_input: FloatNotNan,
-        intensity_input: FloatNotNan,
+        center_x_input: FloatLim,
+        center_y_input: FloatLim,
+        width_input: FloatLim,
+        height_input: FloatLim,
+        theta_input: FloatLim,
+        intensity_input: FloatLim,
         nx: u32,
         ny: u32,
     ) -> bool {
@@ -357,14 +371,14 @@ mod tests {
     // Add a reason why this lint is allowed once the feature `lint_reasons` is stabilized.
     #[allow(clippy::too_many_arguments)]
     fn test_shape_rectangle_on_canvas_inside_and_bbox(
-        center_x_input: FloatNotNan,
-        center_y_input: FloatNotNan,
-        width_input: FloatNotNan,
-        height_input: FloatNotNan,
-        theta_input: FloatNotNan,
-        intensity_input: FloatNotNan,
-        x: FloatNotNan,
-        y: FloatNotNan,
+        center_x_input: FloatLim,
+        center_y_input: FloatLim,
+        width_input: FloatLim,
+        height_input: FloatLim,
+        theta_input: FloatLim,
+        intensity_input: FloatLim,
+        x: FloatLim64,
+        y: FloatLim64,
     ) -> bool {
         let center_x_input = center_x_input.0;
         let center_y_input = center_y_input.0;
